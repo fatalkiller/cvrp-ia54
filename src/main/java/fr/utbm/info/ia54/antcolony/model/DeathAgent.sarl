@@ -1,0 +1,38 @@
+package fr.utbm.info.ia54.antcolony.model;
+
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Destroy
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+import io.sarl.core.Logging
+import io.sarl.core.Schedules
+
+agent DeathAgent {
+	
+	uses Lifecycle, DefaultContextInteractions, Logging, Schedules
+	
+	on Initialize {
+		loggingName = "Death Agent"
+		info("The death agent was started.")
+
+		emit(new ExitApplicationEvent());
+		in(100)
+		[
+			//Doing it twice in case one was in the middle of spawning at first
+			//With that second one the spawner should already be gone.
+			emit(new ExitApplicationEvent());
+			
+			in(100)
+			[
+				//Im being extra-cautious here but this is to give it time to send the event properly
+				killMe;
+			]
+		]
+	}
+
+	on Destroy {
+		// Event trigger when the agent is destroyed from the system.
+		// You should put all the resource releasing statements in this block of code.
+		info("The death agent has stopped.")
+	}
+}

@@ -1,0 +1,18 @@
+package fr.utbm.info.ia54.antcolony.model;
+
+import java.util.List
+
+//Used to terminate all agents
+event ExitApplicationEvent {}
+
+//Used to send the data an agent collected back to the main one
+event TravelsFinished
+{
+	val pathTaken : List<Road>
+	val timeTaken : Long
+
+	new(pathTaken : List<Road>, timeTaken : Long) {
+		this.pathTaken = pathTaken;
+		this.timeTaken = timeTaken;
+	}
+}
