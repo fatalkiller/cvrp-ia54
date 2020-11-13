@@ -99,7 +99,7 @@ public class Environment {
 			city.setY(city.getY()/scale);
 		}
 		System.out.println(screenBounds.getMaxY());
-	}
+	} 
 	
 	public void makeDefaultMap()
 	{
