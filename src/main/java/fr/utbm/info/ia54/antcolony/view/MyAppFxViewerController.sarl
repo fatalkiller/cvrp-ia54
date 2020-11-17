@@ -1,7 +1,7 @@
-package fr.utbm.info.ia54.antcolony.ui;
+package fr.utbm.info.ia54.antcolony.view;
 
 import io.sarl.javafx.FxViewerController
-import fr.utbm.info.ia54.antcolony.agents.MyAgent
+import fr.utbm.info.ia54.antcolony.view.LaunchAgent
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 import javafx.fxml.FXML
@@ -12,8 +12,6 @@ class MyAppFxViewerController extends FxViewerController {
 
 	val launched = new AtomicBoolean(false)
 
-	var launchedAgent : UUID
-
 	/** UI initialization. The agent framework is started.
 	 */
 	@FXML
@@ -22,7 +20,7 @@ class MyAppFxViewerController extends FxViewerController {
 		if (!this.launched.getAndSet(true)) {
 			// First launch => start the agent framework with an agent of type MyAgent and the computed id.
 			val id = UUID::randomUUID
-			startAgentApplication(typeof(MyAgent), id) [
+			startAgentApplication(typeof(LaunchAgent), id) [
 				// TODO: Put any action that must be done after the first agent launching
 			]
 		}

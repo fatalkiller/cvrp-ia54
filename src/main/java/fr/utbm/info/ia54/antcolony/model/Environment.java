@@ -1,4 +1,4 @@
-package fr.utbm.info.ia54.antcolony.ui;
+package fr.utbm.info.ia54.antcolony.model;
 
 import java.io.File;
 import java.io.FileNotFoundException;

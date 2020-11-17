@@ -1,4 +1,4 @@
-package fr.utbm.info.ia54.antcolony.ui
+package fr.utbm.info.ia54.antcolony.view
 
 /** Request for refreshing the JavaFX screen.
  */

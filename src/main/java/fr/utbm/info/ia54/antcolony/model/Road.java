@@ -1,4 +1,4 @@
-package fr.utbm.info.ia54.antcolony.ui;
+package fr.utbm.info.ia54.antcolony.model;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -6,10 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.utbm.info.ia54.antcolony.model.City;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import fr.utbm.info.ia54.antcolony.ui.City;
 
 public class Road 
 {

@@ -1,4 +1,4 @@
-package fr.utbm.info.ia54.antcolony.agents
+package fr.utbm.info.ia54.antcolony.model
 
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Destroy
@@ -10,10 +10,10 @@ import java.util.HashSet
 import java.util.List
 import java.util.Random
 import java.util.Set
-import fr.utbm.info.ia54.antcolony.ui.Environment
-import fr.utbm.info.ia54.antcolony.ui.Metrics
-import fr.utbm.info.ia54.antcolony.ui.City
-import fr.utbm.info.ia54.antcolony.ui.Road
+import fr.utbm.info.ia54.antcolony.model.Environment
+import fr.utbm.info.ia54.antcolony.model.Metrics
+import fr.utbm.info.ia54.antcolony.model.City
+import fr.utbm.info.ia54.antcolony.model.Road
 
 /**  
  * @author ma-pe

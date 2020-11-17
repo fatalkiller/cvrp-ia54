@@ -1,8 +1,7 @@
-package fr.utbm.info.ia54.antcolony.ui;
+package fr.utbm.info.ia54.antcolony.view;
 
-import fr.utbm.info.ia54.antcolony.StartWindow;
-import fr.utbm.info.ia54.antcolony.ui.Environment;
-import fr.utbm.info.ia54.antcolony.ui.Metrics;
+import fr.utbm.info.ia54.antcolony.model.Environment;
+import fr.utbm.info.ia54.antcolony.model.Metrics;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
