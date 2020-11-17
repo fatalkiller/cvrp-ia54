@@ -1,7 +1,11 @@
 package fr.utbm.info.ia54.antcolony;
 
-import fr.utbm.info.ia54.antcolony.model.DeathAgent;
-import fr.utbm.info.ia54.antcolony.model.MainAgent;
+
+
+import java.util.UUID;
+
+import fr.utbm.info.ia54.antcolony.agents.DeathAgent;
+import fr.utbm.info.ia54.antcolony.agents.MainAgent;
 import io.sarl.bootstrap.SRE;
 import io.sarl.bootstrap.SREBootstrap;
 import javafx.application.Application;
@@ -51,10 +55,16 @@ public class StartWindow extends Application{
 	}
 	*/
 	
-	public static void spawnMainAgent(String map, boolean isDebugMode) throws Exception {
-		SREBootstrap bootstrap = SRE.getBootstrap();
-		bootstrap.startAgent(MainAgent.class, map, isDebugMode);
-	}
+//	public static void spawnMainAgent(String map, boolean isDebugMode) throws Exception {
+//		SREBootstrap bootstrap = SRE.getBootstrap();
+//		bootstrap.startAgent(MainAgent.class, map, isDebugMode);
+//	}
+	
+    public static void spawnMainAgent(String map, boolean isDebugMode) throws Exception 
+    {
+        SREBootstrap bootstrap = SRE.getBootstrap();
+        bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), map, isDebugMode);
+    }
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {

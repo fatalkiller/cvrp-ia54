@@ -1,0 +1,14 @@
+package fr.utbm.info.ia54.antcolony
+
+import javafx.application.Application
+import fr.utbm.info.ia54.antcolony.ui.MyAppFxApplication
+
+/** Launcher for the application.
+ */
+class MyAppLauncher {
+	
+	static def main(args : String*) {
+		// Application::launch(typeof(MyAppFxApplication))
+		Application::launch(typeof(StartWindow))
+	}
+}
