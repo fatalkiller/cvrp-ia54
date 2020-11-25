@@ -22,6 +22,7 @@ agent MainAgent
 	var met : Metrics;     // Stores information on the simulation
 	
 	// Launching options
+	var type : String
 	var map : String 
 	var isDebugMode : Boolean
 
@@ -34,12 +35,14 @@ agent MainAgent
 		loggingName = "Main Agent"
 		info("Main agent spawned !");
 		// Retrieve passed parameters like so
-		map = occurrence.parameters.get(0) as String;
-		isDebugMode = occurrence.parameters.get(1) as Boolean;
+		type = occurrence.parameters.get(0) as String;
+		map = occurrence.parameters.get(1) as String;
+		isDebugMode = occurrence.parameters.get(2) as Boolean;
+		info(type)
 		info(map)
 		info(isDebugMode) 
 		
-		env = new Environment(map);
+		env = new Environment(type, map);
 		met = new Metrics(env);
 		
 

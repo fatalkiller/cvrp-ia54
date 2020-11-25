@@ -30,38 +30,16 @@ public class StartWindow extends Application{
 	private Button startButton;
 	private CheckBox debugModeCheckBox;
 	private ToggleGroup mapGroup;
-	/*
-	private CheckBox benchesCheckBox;
-	private CheckBox exitCheckBox;
-	private Slider agentsDelaySlider;
-	private Slider agentsSimultaneousSlider;
-	private Slider agentsTotalSlider;
-	private  Label agentsDelayLabel;
-	private  Label agentsSimultaneousLabel;
-	private  Label agentsTotalLabel;
-	*/
+	private ToggleGroup typeGroup;
 	
 	public static void main(String[]args) {
 		Application.launch(args);
 	}
 	
-	/*
-	//Pass instructions you need to pass to the main agent like so
-	public static void spawnMainAgent(boolean pillars, boolean benches, boolean randomExit, double agentsDelay, int agentsSimultaneous, int agentsTotal) throws Exception {
-		SREBootstrap bootstrap = SRE.getBootstrap();
-		bootstrap.startAgent(MainAgent.class, pillars, benches, randomExit, agentsDelay, agentsSimultaneous, agentsTotal);
-	}
-	*/
-	
-//	public static void spawnMainAgent(String map, boolean isDebugMode) throws Exception {
-//		SREBootstrap bootstrap = SRE.getBootstrap();
-//		bootstrap.startAgent(MainAgent.class, map, isDebugMode);
-//	}
-	
-    public static void spawnMainAgent(String map, boolean isDebugMode) throws Exception 
+    public static void spawnMainAgent(String type, String map, boolean isDebugMode) throws Exception 
     {
         SREBootstrap bootstrap = SRE.getBootstrap();
-        bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), map, isDebugMode);
+        bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, isDebugMode);
     }
 	
 	@Override
@@ -81,60 +59,113 @@ public class StartWindow extends Application{
 		
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent event) {
+            public void handle(ActionEvent event) 
+            {
             	try {
-            		/*
-            		init stuff here
-            		boolean benches = benchesCheckBox.isSelected();
-            		boolean randomExit = exitCheckBox.isSelected();
-            		double agentsDelay =  agentsDelaySlider.getValue();
-            		int agentsSimultaneous =  (int) agentsSimultaneousSlider.getValue();
-            		int agentsTotal =  (int) agentsTotalSlider.getValue();
-            		*/
-            		
+
+            		String type = typeGroup.getSelectedToggle().getUserData().toString();
             		String map = mapGroup.getSelectedToggle().getUserData().toString();
             		boolean isDebugMode = debugModeCheckBox.isSelected();
             		//Pass stuff here as well
-					StartWindow.spawnMainAgent(map, isDebugMode);
+					StartWindow.spawnMainAgent(type, map, isDebugMode);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
             }
         });
 		
+		typeGroup = new ToggleGroup();
 		mapGroup = new ToggleGroup();
+		
+		RadioButton TSPButton = new RadioButton("TSP");
+		TSPButton.setUserData("TSP");
+		TSPButton.setSelected(false);
+		TSPButton.setToggleGroup(typeGroup);
+		
 		
 		RadioButton defaultMapButton = new RadioButton("5 French Cities");
 		defaultMapButton.setUserData("Default Map");
-		defaultMapButton.setSelected(true);
+		defaultMapButton.setSelected(false);
 		defaultMapButton.setToggleGroup(mapGroup);
+		defaultMapButton.setVisible(false);
 		
 		RadioButton usCapitals = new RadioButton("48 US Capitals");
 		usCapitals.setUserData("USCapitals");
 		usCapitals.setSelected(false);
 		usCapitals.setToggleGroup(mapGroup);
+		usCapitals.setVisible(false);
 		
 		RadioButton randomCities = new RadioButton("532 Random Cities");
 		randomCities.setUserData("RandomCities");
 		randomCities.setSelected(false);
 		randomCities.setToggleGroup(mapGroup);
+		randomCities.setVisible(false);
 		
 		RadioButton usCities = new RadioButton("13509 US Cities");
 		usCities.setUserData("USCities");
 		usCities.setSelected(false);
 		usCities.setToggleGroup(mapGroup);
+		usCities.setVisible(false);
+		
+		
+		
+		RadioButton CRVPButton = new RadioButton("CRVP");
+		CRVPButton.setUserData("CRVP");
+		CRVPButton.setSelected(true);
+		CRVPButton.setToggleGroup(typeGroup);
+		
+		RadioButton CRVPBenchmark1 = new RadioButton("CRVPBenchmark1");
+		CRVPBenchmark1.setUserData("CRVPBenchmark1");
+		CRVPBenchmark1.setSelected(true);
+		CRVPBenchmark1.setToggleGroup(mapGroup);
+		CRVPBenchmark1.setVisible(true);
+		
+		RadioButton CRVPBenchmark2 = new RadioButton("CRVPBenchmark2");
+		CRVPBenchmark2.setUserData("CRVPBenchmark2");
+		CRVPBenchmark2.setSelected(false);
+		CRVPBenchmark2.setToggleGroup(mapGroup);
+		CRVPBenchmark2.setVisible(true);
 		
 		debugModeCheckBox = new CheckBox("Debug Mode");
 		debugModeCheckBox.setSelected(false);
-		
+
+		layout.getChildren().add(TSPButton);
+		layout.getChildren().add(CRVPButton);
 		layout.getChildren().add(defaultMapButton);
 		layout.getChildren().add(usCapitals);
 		layout.getChildren().add(randomCities);
 		layout.getChildren().add(usCities);
+		layout.getChildren().add(CRVPBenchmark1);
+		layout.getChildren().add(CRVPBenchmark2);
 		
 		layout.getChildren().add(debugModeCheckBox);
 		layout.getChildren().add(startButton);
 		layout.setAlignment(Pos.CENTER); 
+		
+
+		TSPButton.setOnAction( __ ->
+		{
+			defaultMapButton.setVisible(true);
+			defaultMapButton.setSelected(true);
+			usCapitals.setVisible(true);
+			randomCities.setVisible(true);
+			usCities.setVisible(true);
+
+			CRVPBenchmark1.setVisible(false);
+			CRVPBenchmark2.setVisible(false);
+		});
+		
+		CRVPButton.setOnAction( __ ->
+		{
+			CRVPBenchmark1.setVisible(true);
+			CRVPBenchmark1.setSelected(true);
+			CRVPBenchmark2.setVisible(true);
+
+			defaultMapButton.setVisible(false);
+			usCapitals.setVisible(false);
+			randomCities.setVisible(false);
+			usCities.setVisible(false);
+		});
 		
 		s = new Scene(layout, 600, 600);
 		primaryStage.setScene(s);

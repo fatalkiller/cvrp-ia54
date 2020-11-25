@@ -21,7 +21,7 @@ public class Environment {
 	public List<Road> roads;
 	
 	
-	public Environment(String map)
+	public Environment(String type, String map)
 	{
 		cities=new ArrayList<City>();
 		roads=new ArrayList<Road>();
@@ -60,6 +60,11 @@ public class Environment {
 
 					maxX=Math.max(Double.parseDouble(data[1]), maxX);
 					maxY=Math.max(Double.parseDouble(data[2]), maxY);
+				}
+				
+				if(type.equals("CRVP"))
+				{
+					//TODO : import capacity information with city.setCapacity(...)
 				}
 			}
 			

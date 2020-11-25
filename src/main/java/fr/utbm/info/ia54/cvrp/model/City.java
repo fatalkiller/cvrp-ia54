@@ -18,6 +18,12 @@ public class City
 	private Double x;
 	private Double y;
 	
+	//How much does the city cost to deliver ?
+	//Positive value counts as a refill station
+	//We assume all refill stations will refill the same value which is the car's max capacity
+	//(It should still work otherwise though)
+	//Negative value counts as a delivery cost
+	private Long capacity;
 	
 	
 	
@@ -55,14 +61,16 @@ public class City
 		this.name = null;
 		this.x = null;
 		this.y = null;
+		this.capacity = null;
 	}
 
-	public City(UUID uuid, String name, Double x, Double y) {
+	public City(UUID uuid, String name, Double x, Double y, Long capacity) {
 		super();
 		this.uuid = uuid;
 		this.name = name;
 		this.x = x;
 		this.y = y;
+		this.capacity = capacity;
 	}
 
 	public UUID getUuid() {
@@ -91,4 +99,12 @@ public class City
 	public void setY(Double y) {
 		this.y = y;
 	}
+	public Long getCapacity() {
+		return capacity;
+	}
+
+	public void setCapacity(Long capacity) {
+		this.capacity = capacity;
+	}
+	
 }

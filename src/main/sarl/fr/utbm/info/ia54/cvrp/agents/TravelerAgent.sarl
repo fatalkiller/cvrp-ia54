@@ -75,7 +75,6 @@ agent TravelerAgent
 			
 			//change location
 			currentCity=road.travel(currentCity);
-
 		}
 		emit(new TravelsFinished(travelledRoads, travelTime))
 		killMe;
@@ -104,22 +103,36 @@ agent TravelerAgent
 			totalReverseWeights = totalReverseWeights + totalWeights - road.weight;
 		}
 
-		for (road : availableRoads) {
-			if (chosenRoad === null) {
-				if (totalWeights == 0 || totalReverseWeights == 0) {
-					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
-						1f / availableRoads.size();
-					if (rng < cumulativeNormalizedReverseWeights) {
-						chosenRoad = road;
+		for (road : availableRoads) 
+		{
+			if (road === availableRoads.tail) //If its the last available road, just pick it.
+			{
+				chosenRoad=road;
+			}
+			else
+			{
+				if (chosenRoad === null) //If road not yet chosen, pick it
+				{
+					if (totalWeights == 0 || totalReverseWeights == 0) 
+					{
+						cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
+							1f / availableRoads.size();
+						if (rng < cumulativeNormalizedReverseWeights) 
+						{
+							chosenRoad = road;
+						}
 					}
-				} else {
-					// We want smaller weights to be picked more often so we used reverse weights
-					reverseWeights = totalWeights - road.weight;
-					NormalizedReverseWeights = reverseWeights / totalReverseWeights;
-					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
-						NormalizedReverseWeights;
-					if (rng < cumulativeNormalizedReverseWeights) {
-						chosenRoad = road;
+					else 
+					{
+						// We want smaller weights to be picked more often so we used reverse weights
+						reverseWeights = totalWeights - road.weight;
+						NormalizedReverseWeights = reverseWeights / totalReverseWeights;
+						cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
+							NormalizedReverseWeights;
+						if (rng < cumulativeNormalizedReverseWeights) 
+						{
+							chosenRoad = road;
+						}
 					}
 				}
 			}
