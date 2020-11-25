@@ -1,4 +1,4 @@
-package fr.utbm.info.ia54.antcolony.model;
+package fr.utbm.info.ia54.cvrp.model;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fr.utbm.info.ia54.antcolony.model.City;
+import fr.utbm.info.ia54.cvrp.model.City;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;

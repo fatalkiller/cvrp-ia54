@@ -1,4 +1,4 @@
-package fr.utbm.info.ia54.antcolony.model;
+package fr.utbm.info.ia54.cvrp.model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,7 +31,7 @@ public class Environment {
 		}
 		else
 		{
-			File mapFile = new File("src/main/java/fr/utbm/info/ia54/antcolony/model/benchmarks/"+map+".tsp");
+			File mapFile = new File("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/"+map+".tsp");
 			Scanner scanner = null;
 			String line = null;
 			String data[] = null;

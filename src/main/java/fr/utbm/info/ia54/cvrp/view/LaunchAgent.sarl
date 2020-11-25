@@ -1,6 +1,6 @@
-package fr.utbm.info.ia54.antcolony.view
+package fr.utbm.info.ia54.cvrp.view
 
-import fr.utbm.info.ia54.antcolony.view.Refresh
+import fr.utbm.info.ia54.cvrp.view.Refresh
 import io.sarl.core.Behaviors
 import io.sarl.core.ExternalContextAccess
 import io.sarl.core.Initialize

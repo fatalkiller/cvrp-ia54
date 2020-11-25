@@ -1,6 +1,6 @@
-package fr.utbm.info.ia54.antcolony
+package fr.utbm.info.ia54.cvrp
 
-import fr.utbm.info.ia54.antcolony.view.StartWindow
+import fr.utbm.info.ia54.cvrp.view.StartWindow
 import javafx.application.Application
 
 /** Launcher for the application.

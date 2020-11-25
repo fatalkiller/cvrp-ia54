@@ -1,4 +1,4 @@
-package fr.utbm.info.ia54.antcolony.model;
+package fr.utbm.info.ia54.cvrp.model;
 
 import java.util.UUID;
 

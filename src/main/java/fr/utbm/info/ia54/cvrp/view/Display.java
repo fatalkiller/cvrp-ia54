@@ -1,10 +1,10 @@
-package fr.utbm.info.ia54.antcolony.view;
+package fr.utbm.info.ia54.cvrp.view;
 
-import fr.utbm.info.ia54.antcolony.model.Environment;
-import fr.utbm.info.ia54.antcolony.model.Metrics;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
+import fr.utbm.info.ia54.cvrp.model.Environment;
+import fr.utbm.info.ia54.cvrp.model.Metrics;
 import javafx.application.Platform;
 
 public class Display{

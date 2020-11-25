@@ -1,6 +1,6 @@
-package fr.utbm.info.ia54.antcolony.model
+package fr.utbm.info.ia54.cvrp.agents
 
-import fr.utbm.info.ia54.antcolony.view.Display
+import fr.utbm.info.ia54.cvrp.view.Display
 import io.sarl.core.AgentTask
 import io.sarl.core.Destroy
 import io.sarl.core.Initialize
@@ -8,9 +8,9 @@ import io.sarl.core.Lifecycle
 import io.sarl.core.Logging
 import io.sarl.core.Schedules
 import java.util.List
-import fr.utbm.info.ia54.antcolony.model.Environment
-import fr.utbm.info.ia54.antcolony.model.Metrics
-import fr.utbm.info.ia54.antcolony.model.Road
+import fr.utbm.info.ia54.cvrp.model.Environment
+import fr.utbm.info.ia54.cvrp.model.Metrics
+import fr.utbm.info.ia54.cvrp.model.Road
 
 // Don't write over occurrences 
 // Handle synchronization issues with synchronized() when needed

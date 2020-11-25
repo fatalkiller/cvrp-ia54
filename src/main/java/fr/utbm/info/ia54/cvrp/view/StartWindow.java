@@ -1,11 +1,9 @@
-package fr.utbm.info.ia54.antcolony.view;
-
-
+package fr.utbm.info.ia54.cvrp.view;
 
 import java.util.UUID;
 
-import fr.utbm.info.ia54.antcolony.model.DeathAgent;
-import fr.utbm.info.ia54.antcolony.model.MainAgent;
+import fr.utbm.info.ia54.cvrp.agents.DeathAgent;
+import fr.utbm.info.ia54.cvrp.agents.MainAgent;
 import io.sarl.bootstrap.SRE;
 import io.sarl.bootstrap.SREBootstrap;
 import javafx.application.Application;
