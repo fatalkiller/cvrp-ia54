@@ -109,34 +109,34 @@ public class StartWindow extends Application{
 		
 		
 		
-		RadioButton CRVPButton = new RadioButton("CRVP");
-		CRVPButton.setUserData("CRVP");
-		CRVPButton.setSelected(true);
-		CRVPButton.setToggleGroup(typeGroup);
+		RadioButton CVRPButton = new RadioButton("CVRP");
+		CVRPButton.setUserData("CVRP");
+		CVRPButton.setSelected(true);
+		CVRPButton.setToggleGroup(typeGroup);
 		
-		RadioButton CRVPBenchmark1 = new RadioButton("CRVPBenchmark1");
-		CRVPBenchmark1.setUserData("CRVPBenchmark1");
-		CRVPBenchmark1.setSelected(true);
-		CRVPBenchmark1.setToggleGroup(mapGroup);
-		CRVPBenchmark1.setVisible(true);
+		RadioButton CVRPBenchmark1 = new RadioButton("CMT1");
+		CVRPBenchmark1.setUserData("CMT1");
+		CVRPBenchmark1.setSelected(true);
+		CVRPBenchmark1.setToggleGroup(mapGroup);
+		CVRPBenchmark1.setVisible(true);
 		
-		RadioButton CRVPBenchmark2 = new RadioButton("CRVPBenchmark2");
-		CRVPBenchmark2.setUserData("CRVPBenchmark2");
-		CRVPBenchmark2.setSelected(false);
-		CRVPBenchmark2.setToggleGroup(mapGroup);
-		CRVPBenchmark2.setVisible(true);
+		RadioButton CVRPBenchmark2 = new RadioButton("CMT2");
+		CVRPBenchmark2.setUserData("CMT2");
+		CVRPBenchmark2.setSelected(false);
+		CVRPBenchmark2.setToggleGroup(mapGroup);
+		CVRPBenchmark2.setVisible(true);
 		
 		debugModeCheckBox = new CheckBox("Debug Mode");
 		debugModeCheckBox.setSelected(false);
 
 		layout.getChildren().add(TSPButton);
-		layout.getChildren().add(CRVPButton);
+		layout.getChildren().add(CVRPButton);
 		layout.getChildren().add(defaultMapButton);
 		layout.getChildren().add(usCapitals);
 		layout.getChildren().add(randomCities);
 		layout.getChildren().add(usCities);
-		layout.getChildren().add(CRVPBenchmark1);
-		layout.getChildren().add(CRVPBenchmark2);
+		layout.getChildren().add(CVRPBenchmark1);
+		layout.getChildren().add(CVRPBenchmark2);
 		
 		layout.getChildren().add(debugModeCheckBox);
 		layout.getChildren().add(startButton);
@@ -151,15 +151,15 @@ public class StartWindow extends Application{
 			randomCities.setVisible(true);
 			usCities.setVisible(true);
 
-			CRVPBenchmark1.setVisible(false);
-			CRVPBenchmark2.setVisible(false);
+			CVRPBenchmark1.setVisible(false);
+			CVRPBenchmark2.setVisible(false);
 		});
 		
-		CRVPButton.setOnAction( __ ->
+		CVRPButton.setOnAction( __ ->
 		{
-			CRVPBenchmark1.setVisible(true);
-			CRVPBenchmark1.setSelected(true);
-			CRVPBenchmark2.setVisible(true);
+			CVRPBenchmark1.setVisible(true);
+			CVRPBenchmark1.setSelected(true);
+			CVRPBenchmark2.setVisible(true);
 
 			defaultMapButton.setVisible(false);
 			usCapitals.setVisible(false);

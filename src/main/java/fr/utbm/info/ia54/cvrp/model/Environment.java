@@ -31,10 +31,14 @@ public class Environment {
 		}
 		else
 		{
-			File mapFile = new File("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/"+map+".tsp");
+			final boolean isCVRP = type.equals("CVRP");
+			File mapFile = new File("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/" + map + (isCVRP ? ".vrp" : ".tsp"));
 			Scanner scanner = null;
 			String line = null;
 			String data[] = null;
+			boolean isDemandSection = false;
+			boolean isDepotSection = false;
+			Long capacity = new Long(0);
 			Double maxX = new Double(0);
 			Double maxY = new Double(0);
 			City city;
@@ -49,25 +53,42 @@ public class Environment {
 			while (scanner.hasNextLine()) 
 			{
 				line = scanner.nextLine();
-				if(line != null && !line.isEmpty() && Character.isDigit(line.charAt(0)))
-				{
+				if(line != null && !line.isEmpty()) {
 					data = line.split(" ");
-					city=new City();
-					city.setName("City "+data[0]);
-					city.setX(Double.parseDouble(data[1]));
-					city.setY(Double.parseDouble(data[2]));
-					cities.add(city);
+					if (isCVRP) {
+						if (data.length == 3 && data[0].equals("CAPACITY")) {
+							capacity = new Long(data[2]);
+						}
+						if (line.equals("DEMAND_SECTION")) {
+							isDemandSection = true;
+						}
 
-					maxX=Math.max(Double.parseDouble(data[1]), maxX);
-					maxY=Math.max(Double.parseDouble(data[2]), maxY);
+						if (line.equals("DEPOT_SECTION")) {
+							isDepotSection = true;
+						}
+					}
+
+					if (Character.isDigit(line.charAt(0))) {
+						if (!isDemandSection) {
+							// Import city information
+							city=new City();
+							city.setName("City "+data[0]);
+							city.setX(Double.parseDouble(data[1]));
+							city.setY(Double.parseDouble(data[2]));
+							cities.add(city);
+
+							maxX=Math.max(Double.parseDouble(data[1]), maxX);
+							maxY=Math.max(Double.parseDouble(data[2]), maxY);
+						
+						} else {
+							// Import capacity information
+							city = cities.get(Integer.parseInt(data[0]) - 1);
+							city.setCapacity(isDepotSection ? capacity : new Long("-" + data[1]));
+						}
+					}
 				}
 				
-				if(type.equals("CRVP"))
-				{
-					//TODO : import capacity information with city.setCapacity(...)
-				}
 			}
-			
 			autoGenerateRoads();
 			resizeMap(maxX, maxY);
 		}
