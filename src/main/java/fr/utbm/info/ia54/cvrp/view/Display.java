@@ -63,7 +63,6 @@ public class Display{
     	//Also display some metrics & stats
     	g.getChildren().addAll(metrics.getMetrics());
     	
-    	
     	//Assuming stuff is already being displayed
         //stage.show();
     	

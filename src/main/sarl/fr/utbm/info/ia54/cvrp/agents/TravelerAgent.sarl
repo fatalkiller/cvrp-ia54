@@ -19,7 +19,8 @@ import fr.utbm.info.ia54.cvrp.model.Road
  * @author ma-pe
  * 
  */
-@SuppressWarnings("potential_field_synchronization_problem")
+ //See main
+@SuppressWarnings("potential_inefficient_value_conversion", "potential_field_synchronization_problem")
 agent TravelerAgent 
 {
 	var env : Environment; 
@@ -30,6 +31,9 @@ agent TravelerAgent
 	var travelledRoads : List<Road>;
 	var travelTime : Long;
 	var isDebugMode : Boolean;
+	var type : String;
+	var charge : Long;
+	var maxCharge : Long;
 	
 	uses Logging, Lifecycle, DefaultContextInteractions
 
@@ -39,9 +43,12 @@ agent TravelerAgent
 		met = occurrence.parameters.get(1) as Metrics;
 
 		startingCity = occurrence.parameters.get(2) as City;
-		isDebugMode = occurrence.parameters.get(3) as Boolean;
+		type = occurrence.parameters.get(3) as String;
+		isDebugMode = occurrence.parameters.get(4) as Boolean;
 
 		currentCity = startingCity;
+		charge = new Long(0);
+		maxCharge = currentCity.getCapacity();
 		visitedCities = new HashSet<City>();
 		visitedCities.add(startingCity);
 		travelledRoads = new ArrayList<Road>();
@@ -56,22 +63,32 @@ agent TravelerAgent
 		travel();
 	}
 	
-	//TODO : change looping conditions to fit CVRP
 	def travel() : void
 	{
 		var road : Road = null;
-		while (visitedCities.size() != env.cities.size() || currentCity!=startingCity) 	
+		while ((visitedCities.size() != env.cities.size()) || currentCity!=startingCity) 	
 		{
+			if(type.equals("CVRP"))
+			{
+				if(charge+currentCity.getCapacity()>=0)
+				{
+					charge = Math.min(charge + currentCity.getCapacity(), maxCharge);
+					visitedCities.add(currentCity);
+				}
+			}
 			//pick a road
 			// Thats the most complex thing so Ill put it in another function
 			road = pickRoad();
 			
 			//add traveltime
-			travelTime=travelTime+road.timeTaken;
+			travelTime = travelTime + road.timeTaken;
 			
 			//add to travelledroads and visitedcities (Dont need to worry about which one it is since this is a set)
 			travelledRoads.add(road);
-			visitedCities.addAll(road.getCities());
+			if(type.equals("TSP"))
+			{
+				visitedCities.addAll(road.getCities());
+			}
 			
 			//change location
 			currentCity=road.travel(currentCity);
@@ -105,37 +122,40 @@ agent TravelerAgent
 
 		for (road : availableRoads) 
 		{
-			if (road === availableRoads.tail) //If its the last available road, just pick it.
+			if (chosenRoad === null) //If road not yet chosen, pick it
 			{
-				chosenRoad=road;
-			}
-			else
-			{
-				if (chosenRoad === null) //If road not yet chosen, pick it
+				if (totalWeights == 0 || totalReverseWeights == 0 || true) 
 				{
-					if (totalWeights == 0 || totalReverseWeights == 0) 
+					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
+						1f / availableRoads.size();
+					if (rng < cumulativeNormalizedReverseWeights) 
 					{
-						cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
-							1f / availableRoads.size();
-						if (rng < cumulativeNormalizedReverseWeights) 
-						{
-							chosenRoad = road;
-						}
+						chosenRoad = road;
 					}
-					else 
+				}
+				else 
+				{
+					// TODO : We're gonna need an algorithm that promotes exploration a lot more
+					//Also maybe make it priorise startingCity when charge is really low ?
+					// For now Ill just make it purely random (see warning above)
+					
+					// We want smaller weights to be picked more often so we used reverse weights
+					reverseWeights = totalWeights - road.weight;
+					NormalizedReverseWeights = reverseWeights / totalReverseWeights;
+					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
+						NormalizedReverseWeights;
+					if (rng < cumulativeNormalizedReverseWeights) 
 					{
-						// We want smaller weights to be picked more often so we used reverse weights
-						reverseWeights = totalWeights - road.weight;
-						NormalizedReverseWeights = reverseWeights / totalReverseWeights;
-						cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
-							NormalizedReverseWeights;
-						if (rng < cumulativeNormalizedReverseWeights) 
-						{
-							chosenRoad = road;
-						}
+						chosenRoad = road;
 					}
 				}
 			}
+		}
+		//To correct rng rounding error
+		if (chosenRoad === null)
+		{
+			info("RNG Rounding error, picking first road available instead.")
+			chosenRoad = availableRoads.get(0);
 		}
 		return chosenRoad;
 	}

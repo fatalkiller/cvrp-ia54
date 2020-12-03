@@ -90,7 +90,7 @@ agent MainAgent
 					//TODO replace Integers/Longs/etc by AtomicInteger or other thread-safe structures
 					met.increaseActiveAgents();
 				}
-				spawn(TravelerAgent, env, met, startCity, isDebugMode);
+				spawn(TravelerAgent, env, met, startCity, type, isDebugMode);
 			}
 		}
 		if(type.equals("CVRP"))
@@ -102,7 +102,7 @@ agent MainAgent
 			}
 			//We assume the Ressupply is always gonna be on city 1
 			// TODO : spawn more than 1 agent per round
-			spawn(TravelerAgent, env, met, env.getCities().get(0), isDebugMode);
+			spawn(TravelerAgent, env, met, env.getCities().get(0), type, isDebugMode);
 		}
 	}
 	

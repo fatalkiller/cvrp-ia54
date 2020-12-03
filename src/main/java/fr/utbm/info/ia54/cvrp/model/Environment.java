@@ -124,7 +124,6 @@ public class Environment {
 			city.setX(city.getX()/scale);
 			city.setY(city.getY()/scale);
 		}
-		System.out.println(screenBounds.getMaxY());
 	} 
 	
 	public void makeDefaultMap()

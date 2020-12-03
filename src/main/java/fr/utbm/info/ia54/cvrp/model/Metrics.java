@@ -71,6 +71,8 @@ public class Metrics
 		this.fastestPathObj=pathTaken;
 		String fastestPathString = "\n";
 		City currentCity = null;
+		Long capacity = new Long(0);
+		Long maxCapacity;
 
 		//Determining the first city making the assumption that the agent didnt take the same road twice in a row
 		//Since only the fastest of times get processed here, this is a fair assumption
@@ -83,8 +85,10 @@ public class Metrics
 		{
 			currentCity=pathTaken.get(0).getCity1();
 		}
-		
-		fastestPathString+=currentCity.getName();
+		maxCapacity=currentCity.getCapacity();
+		if(capacity+currentCity.getCapacity()>=0)
+			capacity=Math.min(capacity+currentCity.getCapacity(), maxCapacity);
+		fastestPathString+=currentCity.getName()+" ; Charge : "+capacity;
 		for(Road road : pathTaken)
 		{
 			if(currentCity==road.getCity1())
@@ -95,7 +99,9 @@ public class Metrics
 			{
 				currentCity=road.getCity1();
 			}
-			fastestPathString+="\n-> "+currentCity.getName();
+			if(capacity+currentCity.getCapacity()>=0)
+				capacity=Math.min(capacity+currentCity.getCapacity(), maxCapacity);
+			fastestPathString+="\n-> "+currentCity.getName()+" ; Charge : "+capacity;
 		}
 		
 		this.fastestPath = fastestPathString;
@@ -135,11 +141,13 @@ public class Metrics
 			{
 				Line roadLine=new Line();
 				//Assuming the depot is city 1, they should always be city1 in roads because of how roads are generated.
-				if(fastestPathObj.get(i).getCity1().getCapacity()>0 && i>0 && fastestPathObj.get(i-1).getCity1().getCapacity()>0)
+				if(i>0 && fastestPathObj.get(i).getCity1().getCapacity()>0 && fastestPathObj.get(i-1).getCity1().getCapacity()>0)
 				{
 					colorIndex++;
+					if(colorIndex>colorList.size()-1)
+						colorIndex=0;
 				}
-				
+
 				roadLine.setStroke(colorList.get(colorIndex));
 				roadLine.setStartX(fastestPathObj.get(i).getCity1().getX());
 				roadLine.setStartY(fastestPathObj.get(i).getCity1().getY());
