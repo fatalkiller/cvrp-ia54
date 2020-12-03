@@ -35,7 +35,6 @@ public class Display{
         });
 	}
 
-	//TODO : Check if the map is correct
     public void displaySimulationFrame() {
 
     	//I dont get it but somehow if I dont include the group stuff here I get errors in the console
@@ -47,10 +46,13 @@ public class Display{
 
     	//Things to display
 
-    	//TODO : for each path since restock, use a different color
     	g.getChildren().addAll(environment.getCitiesRepresentation());
-    	g.getChildren().addAll(environment.getCitiesNames());
-    	g.getChildren().addAll(environment.getRoadsRepresentation());
+    	if(debug)
+    	{
+    		g.getChildren().addAll(environment.getCitiesNames());
+    		//No need to display all possible roads, itd just look cluttered
+    		g.getChildren().addAll(environment.getRoadsRepresentation());
+    	}
     	g.getChildren().addAll(metrics.getFastestRoadsRepresentation());
     	
     	if(debug)

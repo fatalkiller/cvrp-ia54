@@ -99,6 +99,7 @@ public class Road
 		return roadLine;
 	}
 	
+	//Unused 
 	public Line getHighlightedLine()
 	{
 		Line roadLine=new Line();

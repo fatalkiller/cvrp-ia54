@@ -1,5 +1,7 @@
 package fr.utbm.info.ia54.cvrp.view;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import fr.utbm.info.ia54.cvrp.agents.DeathAgent;
@@ -120,11 +122,17 @@ public class StartWindow extends Application{
 		CVRPBenchmark1.setToggleGroup(mapGroup);
 		CVRPBenchmark1.setVisible(true);
 		
-		RadioButton CVRPBenchmark2 = new RadioButton("CMT2");
-		CVRPBenchmark2.setUserData("CMT2");
-		CVRPBenchmark2.setSelected(false);
-		CVRPBenchmark2.setToggleGroup(mapGroup);
-		CVRPBenchmark2.setVisible(true);
+		RadioButton CVRPBenchmarki;
+		List<RadioButton> otherButtons=new ArrayList<RadioButton>();
+		for(int i=2;i<15;i++)
+		{
+			CVRPBenchmarki = new RadioButton("CMT"+i);
+			CVRPBenchmarki.setUserData("CMT"+i);
+			CVRPBenchmarki.setSelected(false);
+			CVRPBenchmarki.setToggleGroup(mapGroup);
+			CVRPBenchmarki.setVisible(true);
+			otherButtons.add(CVRPBenchmarki);
+		}
 		
 		debugModeCheckBox = new CheckBox("Debug Mode");
 		debugModeCheckBox.setSelected(false);
@@ -136,7 +144,8 @@ public class StartWindow extends Application{
 		layout.getChildren().add(randomCities);
 		layout.getChildren().add(usCities);
 		layout.getChildren().add(CVRPBenchmark1);
-		layout.getChildren().add(CVRPBenchmark2);
+		for(RadioButton button : otherButtons)
+			layout.getChildren().add(button);
 		
 		layout.getChildren().add(debugModeCheckBox);
 		layout.getChildren().add(startButton);
@@ -152,14 +161,16 @@ public class StartWindow extends Application{
 			usCities.setVisible(true);
 
 			CVRPBenchmark1.setVisible(false);
-			CVRPBenchmark2.setVisible(false);
+			for(RadioButton button : otherButtons)
+				button.setVisible(false);
 		});
 		
 		CVRPButton.setOnAction( __ ->
 		{
 			CVRPBenchmark1.setVisible(true);
 			CVRPBenchmark1.setSelected(true);
-			CVRPBenchmark2.setVisible(true);
+			for(RadioButton button : otherButtons)
+				button.setVisible(true);
 
 			defaultMapButton.setVisible(false);
 			usCapitals.setVisible(false);

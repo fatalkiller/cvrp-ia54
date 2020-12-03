@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
@@ -13,18 +14,19 @@ public class Metrics
 {
 	private Text display;
 
+	private String type;
 	private Calendar startTime;
 	private String fastestTime;
 	private String fastestPath;
 	//TODO : try replacing with concurrentList
-	//TODO : Make it a set of lists to implement CVRP version
 	private List<Road> fastestPathObj; //Use this to know which path to highlight
 	private Integer roundsElapsed;
 	private Integer totalCities;
 	private Integer activeAgents;
 	
-	public Metrics(Environment env)
+	public Metrics(String type, Environment env)
 	{
+		this.type=type;
 		Rectangle2D	screenBounds = Screen.getPrimary().getBounds();
 		display=new Text();
 		display.setX(screenBounds.getMaxX()*0.75);
@@ -103,15 +105,63 @@ public class Metrics
 	public List<Line> getFastestRoadsRepresentation()
 	{
 		List<Line> roadsRep=new ArrayList<Line>();
-		
-		for(Road road : fastestPathObj)
+		if(type.equals("TSP"))
 		{
-			roadsRep.add(road.getHighlightedLine());
+			for(Road road : fastestPathObj)
+			{
+				roadsRep.add(road.getHighlightedLine());
+			}
 		}
-		
+		else if(type.equals("CVRP"))
+		{
+			List<Color> colorList=new ArrayList<Color>();
+			int colorIndex=0;
+			colorList.add(Color.RED);
+			colorList.add(Color.BLUE);
+			colorList.add(Color.GREEN);
+			colorList.add(Color.YELLOW);
+			colorList.add(Color.PURPLE);
+			colorList.add(Color.AQUA);
+			colorList.add(Color.BLUEVIOLET);
+			colorList.add(Color.BROWN);
+			colorList.add(Color.CORAL);
+			colorList.add(Color.DARKCYAN);
+			colorList.add(Color.GOLDENROD);
+			colorList.add(Color.ROYALBLUE);
+			//Hopefully enough
+			
+			int i;
+			for (i=0;i<fastestPathObj.size();i++)
+			{
+				Line roadLine=new Line();
+				//Assuming the depot is city 1, they should always be city1 in roads because of how roads are generated.
+				if(fastestPathObj.get(i).getCity1().getCapacity()>0 && i>0 && fastestPathObj.get(i-1).getCity1().getCapacity()>0)
+				{
+					colorIndex++;
+				}
+				
+				roadLine.setStroke(colorList.get(colorIndex));
+				roadLine.setStartX(fastestPathObj.get(i).getCity1().getX());
+				roadLine.setStartY(fastestPathObj.get(i).getCity1().getY());
+				roadLine.setEndX(fastestPathObj.get(i).getCity2().getX());
+				roadLine.setEndY(fastestPathObj.get(i).getCity2().getY());
+				
+				roadsRep.add(roadLine);
+			}
+		}
 		return roadsRep;
 	}
 	
+	
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public Text getDisplay() {
 		return display;
 	}

@@ -32,6 +32,9 @@ public class City
 		Circle cityDisplay=new Circle();
 		
 		Color cityColor=Color.GRAY;
+		//To distinguish the starting city
+		if(this.capacity>0)
+			cityColor=Color.GREENYELLOW;
 		Integer cityRadius=5;
 		
 		cityDisplay.setCenterX(x);
@@ -61,7 +64,8 @@ public class City
 		this.name = null;
 		this.x = null;
 		this.y = null;
-		this.capacity = null;
+		//Gotta put this at 0 so TSP still works
+		this.capacity = new Long(0);
 	}
 
 	public City(UUID uuid, String name, Double x, Double y, Long capacity) {

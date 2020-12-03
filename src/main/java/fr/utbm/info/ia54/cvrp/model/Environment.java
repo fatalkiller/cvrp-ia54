@@ -293,7 +293,7 @@ public class Environment {
 		{
 			citiesRep.add(city.getCircle());
 		}
-		
+
 		return citiesRep;
 	}
 	

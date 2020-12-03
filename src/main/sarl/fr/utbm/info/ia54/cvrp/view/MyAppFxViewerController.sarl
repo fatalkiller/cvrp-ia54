@@ -21,13 +21,13 @@ class MyAppFxViewerController extends FxViewerController {
 			// First launch => start the agent framework with an agent of type MyAgent and the computed id.
 			val id = UUID::randomUUID
 			startAgentApplication(typeof(LaunchAgent), id) [
-				// TODO: Put any action that must be done after the first agent launching
+				// Put any action that must be done after the first agent launching if needed
 			]
 		}
 	}
 
 	protected def refreshScreen {
-		// TODO: Refresh the JavaFX screen
+		// Refresh the JavaFX screen if needed
 	}
 
 	/** React to any request from the agent refresh the UI.
