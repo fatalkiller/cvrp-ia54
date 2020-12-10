@@ -25,15 +25,4 @@ class MyAppFxViewerController extends FxViewerController {
 			]
 		}
 	}
-
-	protected def refreshScreen {
-		// Refresh the JavaFX screen if needed
-	}
-
-	/** React to any request from the agent refresh the UI.
-	 */
-	dispatch def receiveEvent(^event : Refresh) {
-		refreshScreen
-	}
-
 }

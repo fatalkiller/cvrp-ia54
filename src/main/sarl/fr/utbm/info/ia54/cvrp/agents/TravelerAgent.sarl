@@ -15,15 +15,14 @@ import fr.utbm.info.ia54.cvrp.model.Metrics
 import fr.utbm.info.ia54.cvrp.model.City
 import fr.utbm.info.ia54.cvrp.model.Road
 
-/**  
+/** 
  * @author ma-pe
  * 
  */
- //See main
+// See main
 @SuppressWarnings("potential_inefficient_value_conversion", "potential_field_synchronization_problem")
-agent TravelerAgent 
-{
-	var env : Environment; 
+agent TravelerAgent {
+	var env : Environment;
 	var met : Metrics;
 	var startingCity : City;
 	var currentCity : City;
@@ -34,11 +33,10 @@ agent TravelerAgent
 	var type : String;
 	var charge : Long;
 	var maxCharge : Long;
-	
+
 	uses Logging, Lifecycle, DefaultContextInteractions
 
-	on Initialize 
-	{
+	on Initialize {
 		env = occurrence.parameters.get(0) as Environment;
 		met = occurrence.parameters.get(1) as Metrics;
 
@@ -62,45 +60,39 @@ agent TravelerAgent
 
 		travel();
 	}
-	
-	def travel() : void
-	{
+
+	def travel() : void {
 		var road : Road = null;
-		while ((visitedCities.size() != env.cities.size()) || currentCity!=startingCity) 	
-		{
-			if(type.equals("CVRP"))
-			{
-				if(charge+currentCity.getCapacity()>=0)
-				{
+		while ((visitedCities.size() != env.cities.size()) || currentCity != startingCity) {
+			if (type.equals("CVRP")) {
+				if (charge + currentCity.getCapacity() >= 0) {
 					charge = Math.min(charge + currentCity.getCapacity(), maxCharge);
 					visitedCities.add(currentCity);
 				}
 			}
-			//pick a road
+			// pick a road
 			// Thats the most complex thing so Ill put it in another function
 			road = pickRoad();
-			
-			//add traveltime
+
+			// add traveltime
 			travelTime = travelTime + road.timeTaken;
-			
-			//add to travelledroads and visitedcities (Dont need to worry about which one it is since this is a set)
+
+			// add to travelledroads and visitedcities (Dont need to worry about which one it is since this is a set)
 			travelledRoads.add(road);
-			if(type.equals("TSP"))
-			{
+			if (type.equals("TSP")) {
 				visitedCities.addAll(road.getCities());
 			}
-			
-			//change location
-			currentCity=road.travel(currentCity);
+
+			// change location
+			currentCity = road.travel(currentCity);
 		}
 		emit(new TravelsFinished(travelledRoads, travelTime))
 		killMe;
 	}
 
-	//Maybe use SARL to build several road picking skills to test different methods of optimization
+	// Maybe use SARL to build several road picking skills to test different methods of optimization
 	// Maybe double check if all cities are connected if ever using custom maps ?
-	def pickRoad() : Road 
-	{
+	def pickRoad() : Road {
 		var chosenRoad : Road = null;
 		var availableRoads : List<Road> = new ArrayList<Road>();
 		var reverseWeights : Float = new Float(0);
@@ -120,55 +112,42 @@ agent TravelerAgent
 			totalReverseWeights = totalReverseWeights + totalWeights - road.weight;
 		}
 
-		for (road : availableRoads) 
-		{
-			if (chosenRoad === null) //If road not yet chosen, pick it
+		for (road : availableRoads) {
+			if (chosenRoad === null) // If road not yet chosen, pick it
 			{
-				if (totalWeights == 0 || totalReverseWeights == 0 || true) 
-				{
-					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
-						1f / availableRoads.size();
-					if (rng < cumulativeNormalizedReverseWeights) 
-					{
+				if (totalWeights == 0 || totalReverseWeights == 0 || true) {
+					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights + 1f / availableRoads.size();
+					if (rng < cumulativeNormalizedReverseWeights) {
 						chosenRoad = road;
 					}
-				}
-				else 
-				{
+				} else {
 					// TODO : We're gonna need an algorithm that promotes exploration a lot more
-					//Also maybe make it priorise startingCity when charge is really low ?
+					// Also maybe make it priorise startingCity when charge is really low ?
 					// For now Ill just make it purely random (see warning above)
-					
 					// We want smaller weights to be picked more often so we used reverse weights
 					reverseWeights = totalWeights - road.weight;
 					NormalizedReverseWeights = reverseWeights / totalReverseWeights;
-					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights +
-						NormalizedReverseWeights;
-					if (rng < cumulativeNormalizedReverseWeights) 
-					{
+					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights + NormalizedReverseWeights;
+					if (rng < cumulativeNormalizedReverseWeights) {
 						chosenRoad = road;
 					}
 				}
 			}
 		}
-		//To correct rng rounding error
-		if (chosenRoad === null)
-		{
+		// To correct rng rounding error
+		if (chosenRoad === null) {
 			info("RNG Rounding error, picking first road available instead.")
 			chosenRoad = availableRoads.get(0);
 		}
 		return chosenRoad;
 	}
 
-	on ExitApplicationEvent 
-	{
+	on ExitApplicationEvent {
 		killMe;
 	}
 
-	on Destroy 
-	{
-		if (isDebugMode) 
-		{
+	on Destroy {
+		if (isDebugMode) {
 			info("The traveler agent was stopped.")
 		}
 	}

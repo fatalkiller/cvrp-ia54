@@ -8,23 +8,21 @@ import io.sarl.core.Logging
 import io.sarl.core.Schedules
 
 agent DeathAgent {
-	
+
 	uses Lifecycle, DefaultContextInteractions, Logging, Schedules
-	
+
 	on Initialize {
 		loggingName = "Death Agent"
 		info("The death agent was started.")
 
 		emit(new ExitApplicationEvent());
-		in(100)
-		[
-			//Doing it twice in case one was in the middle of spawning at first
-			//With that second one the spawner should already be gone.
+		in(100) [
+			// Doing it twice in case one was in the middle of spawning at first
+			// With that second one the spawner should already be gone.
 			emit(new ExitApplicationEvent());
-			
-			in(100)
-			[
-				//Im being extra-cautious here but this is to give it time to send the event properly
+
+			in(100) [
+				// Im being extra-cautious here but this is to give it time to send the event properly
 				killMe;
 			]
 		]

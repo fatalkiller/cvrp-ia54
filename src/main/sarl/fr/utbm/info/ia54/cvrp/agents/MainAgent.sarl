@@ -12,26 +12,23 @@ import fr.utbm.info.ia54.cvrp.model.Environment
 import fr.utbm.info.ia54.cvrp.model.Metrics
 import fr.utbm.info.ia54.cvrp.model.Road
 
-// Don't write over occurrences 
+// Don't write over occurrences
 // Handle synchronization issues with synchronized() when needed
 @SuppressWarnings("discouraged_occurrence_readonly_use", "potential_field_synchronization_problem")
-agent MainAgent 
-{
+agent MainAgent {
 	var env : Environment; // Stores the position of the objects in the simulation
-	var disp : Display;    // Handles the view
-	var met : Metrics;     // Stores information on the simulation
-	
+	var disp : Display; // Handles the view
+	var met : Metrics; // Stores information on the simulation
 	// Launching options
 	var type : String
-	var map : String 
+	var map : String
 	var isDebugMode : Boolean
 
 	uses Logging, Lifecycle, Schedules
 
-	//I'm importing a String, toString is not inefficient
+	// I'm importing a String, toString is not inefficient
 	@SuppressWarnings("potential_inefficient_value_conversion")
-	on Initialize 
-	{
+	on Initialize {
 		loggingName = "Main Agent"
 		info("Main agent spawned !");
 		// Retrieve passed parameters like so
@@ -40,11 +37,10 @@ agent MainAgent
 		isDebugMode = occurrence.parameters.get(2) as Boolean;
 		info(type)
 		info(map)
-		info(isDebugMode) 
-		
+		info(isDebugMode)
+
 		env = new Environment(type, map);
 		met = new Metrics(type, env);
-		
 
 		info("Environment initialized.");
 
@@ -63,101 +59,81 @@ agent MainAgent
 		info("Starting to loop...")
 		startAgents();
 	}
-	
-	def displayLoop(): void
-	{
+
+	def displayLoop() : void {
 		var framerate : int = 60;
 		val taskMain : AgentTask = task("Main Loop")
 		// Stuff to do every frame :
-		
-		taskMain.every(1000 / framerate) 
-		[
-			
+		taskMain.every(1000 / framerate) [
+
 			disp.displaySimulationFrame();
-			
+
 		]
 	}
-	
-	//Starts a new round
-	def startAgents() : void
-	{
-		if(type.equals("TSP"))
-		{
-			for (startCity : env.getCities()) 
-			{
-				synchronized (met) 
-				{
-					//TODO replace Integers/Longs/etc by AtomicInteger or other thread-safe structures
+
+	// Starts a new round
+	def startAgents() : void {
+		if (type.equals("TSP")) {
+			for (startCity : env.getCities()) {
+				synchronized (met) {
+					// TODO replace Integers/Longs/etc by AtomicInteger or other thread-safe structures
 					met.increaseActiveAgents();
 				}
 				spawn(TravelerAgent, env, met, startCity, type, isDebugMode);
 			}
 		}
-		if(type.equals("CVRP"))
-		{	
-			synchronized (met) 
-			{
+		if (type.equals("CVRP")) {
+			synchronized (met) {
 				// TODO replace Integers/Longs/etc by AtomicInteger or other thread-safe structures
 				met.increaseActiveAgents();
 			}
-			//We assume the Ressupply is always gonna be on city 1
+			// We assume the Ressupply is always gonna be on city 1
 			// TODO : spawn more than 1 agent per round
 			spawn(TravelerAgent, env, met, env.getCities().get(0), type, isDebugMode);
 		}
 	}
-	
-	//Records the result of a finished agent
-	on TravelsFinished
-	{
-		synchronized(met)
-		{
+
+	// Records the result of a finished agent
+	on TravelsFinished {
+		synchronized (met) {
 			met.decreaseActiveAgents();
 		}
 		var pathTaken : List<Road> = occurrence.pathTaken;
 		var timeTaken : Long = occurrence.timeTaken;
 
-		if (met.fastestTime.equals("TBD") || timeTaken < met.fastestTime.longValue) 
-		{
-			if (isDebugMode) 
-			{
+		if (met.fastestTime.equals("TBD") || timeTaken < met.fastestTime.longValue) {
+			if (isDebugMode) {
 				info("new record!")
 			}
-			synchronized(met)
-			{
+			synchronized (met) {
 				met.fastestTime = timeTaken.toString();
 				met.formattedFastestPath = pathTaken;
 			}
 		}
 
-		for (road : pathTaken) 
-		{
+		for (road : pathTaken) {
 			road.increaseFutureWeight(timeTaken);
 		}
 
 		// Updates weights & starts a new round
-		//We assume by the time an agent gets there, more have been spawned if planned
-		if (met.activeAgents == 0) 
-		{
-			synchronized(met)
-			{
+		// We assume by the time an agent gets there, more have been spawned if planned
+		if (met.activeAgents == 0) {
+			synchronized (met) {
 				met.increaseElapsedRounds();
 			}
 			env.updateWeights();
-			if (isDebugMode) 
-			{
+			if (isDebugMode) {
 				info("New round")
 			}
 			startAgents();
 		}
 	}
-	
-	on ExitApplicationEvent
-	{
+
+	on ExitApplicationEvent {
 		killMe;
 	}
 
-	on Destroy 
-	{
+	on Destroy {
 		info("The main agent has stopped.")
 	}
 }

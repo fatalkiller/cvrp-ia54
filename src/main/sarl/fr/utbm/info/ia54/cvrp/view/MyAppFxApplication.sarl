@@ -13,22 +13,21 @@ import javafx.stage.Stage
 class MyAppFxApplication extends FxApplication {
 
 	def doApplicationStart(stage : Stage) : FXMLLoader {
-		// Retrieve the property bundle that contains the UI texts. 
+		// Retrieve the property bundle that contains the UI texts.
 		var simpleName = typeof(MyAppFxApplication).simpleName
 		val bundle = ResourceBundle::getBundle(
-			typeof(MyAppFxApplication).package.name.replaceAll("\\.", "/") + "/"
-			+ simpleName)
+			typeof(MyAppFxApplication).package.name.replaceAll("\\.", "/") + "/" + simpleName)
 
 		// Retrieve the JavaFX UI definition file
 		var location = class.getResource(simpleName + ".fxml")
-		
+
 		// Load the JavaFX UI definition
 		var loader = new FXMLLoader
 		loader.location = location
 		loader.builderFactory = new JavaFXBuilderFactory
 		loader.resources = bundle
 		var root : Parent = loader.load(location.openStream)
-		
+
 		// Create the application UI
 		var scene = new Scene(root)
 		scene.stylesheets.add(class.getResource("ViewerController.css").toExternalForm)

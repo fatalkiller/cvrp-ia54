@@ -1,5 +1,0 @@
-package fr.utbm.info.ia54.cvrp.view
-
-/** Request for refreshing the JavaFX screen.
- */
-event Refresh

@@ -22,118 +22,113 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class StartWindow extends Application{
-	
+public class StartWindow extends Application {
+
 	static private Stage stage;
-	
-	//Items to put on the screen
+
+	// Items to put on the screen
 	private Scene s;
 	private VBox layout;
 	private Button startButton;
 	private CheckBox debugModeCheckBox;
 	private ToggleGroup mapGroup;
 	private ToggleGroup typeGroup;
-	
-	public static void main(String[]args) {
+
+	public static void main(String[] args) {
 		Application.launch(args);
 	}
-	
-    public static void spawnMainAgent(String type, String map, boolean isDebugMode) throws Exception 
-    {
-        SREBootstrap bootstrap = SRE.getBootstrap();
-        bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, isDebugMode);
-    }
-	
+
+	public static void spawnMainAgent(String type, String map, boolean isDebugMode) throws Exception {
+		SREBootstrap bootstrap = SRE.getBootstrap();
+		bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, isDebugMode);
+	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		StartWindow.stage=primaryStage;
+		StartWindow.stage = primaryStage;
 
-		Rectangle2D	screenBounds = Screen.getPrimary().getBounds();
+		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 		primaryStage.setWidth(screenBounds.getMaxX());
 		primaryStage.setHeight(screenBounds.getMaxY());
-		
+
 		primaryStage.setTitle("Launching options");
-		
+
 		layout = new VBox();
 		layout.setSpacing(20);
-		
-		startButton = new Button("Start Colony");
-		
-		startButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) 
-            {
-            	try {
 
-            		String type = typeGroup.getSelectedToggle().getUserData().toString();
-            		String map = mapGroup.getSelectedToggle().getUserData().toString();
-            		boolean isDebugMode = debugModeCheckBox.isSelected();
-            		//Pass stuff here as well
+		startButton = new Button("Start Colony");
+
+		startButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+
+					String type = typeGroup.getSelectedToggle().getUserData().toString();
+					String map = mapGroup.getSelectedToggle().getUserData().toString();
+					boolean isDebugMode = debugModeCheckBox.isSelected();
+					// Pass stuff here as well
 					StartWindow.spawnMainAgent(type, map, isDebugMode);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-            }
-        });
-		
+			}
+		});
+
 		typeGroup = new ToggleGroup();
 		mapGroup = new ToggleGroup();
-		
+
 		RadioButton TSPButton = new RadioButton("TSP");
 		TSPButton.setUserData("TSP");
 		TSPButton.setSelected(false);
 		TSPButton.setToggleGroup(typeGroup);
-		
-		
+
 		RadioButton defaultMapButton = new RadioButton("5 French Cities");
 		defaultMapButton.setUserData("Default Map");
 		defaultMapButton.setSelected(false);
 		defaultMapButton.setToggleGroup(mapGroup);
 		defaultMapButton.setVisible(false);
-		
+
 		RadioButton usCapitals = new RadioButton("48 US Capitals");
 		usCapitals.setUserData("USCapitals");
 		usCapitals.setSelected(false);
 		usCapitals.setToggleGroup(mapGroup);
 		usCapitals.setVisible(false);
-		
+
 		RadioButton randomCities = new RadioButton("532 Random Cities");
 		randomCities.setUserData("RandomCities");
 		randomCities.setSelected(false);
 		randomCities.setToggleGroup(mapGroup);
 		randomCities.setVisible(false);
-		
+
 		RadioButton usCities = new RadioButton("13509 US Cities");
 		usCities.setUserData("USCities");
 		usCities.setSelected(false);
 		usCities.setToggleGroup(mapGroup);
 		usCities.setVisible(false);
-		
-		
-		
+
 		RadioButton CVRPButton = new RadioButton("CVRP");
 		CVRPButton.setUserData("CVRP");
 		CVRPButton.setSelected(true);
 		CVRPButton.setToggleGroup(typeGroup);
-		
+
 		RadioButton CVRPBenchmark1 = new RadioButton("CMT1");
 		CVRPBenchmark1.setUserData("CMT1");
 		CVRPBenchmark1.setSelected(true);
 		CVRPBenchmark1.setToggleGroup(mapGroup);
 		CVRPBenchmark1.setVisible(true);
-		
+
 		RadioButton CVRPBenchmarki;
-		List<RadioButton> otherButtons=new ArrayList<RadioButton>();
-		for(int i=2;i<15;i++)
-		{
-			CVRPBenchmarki = new RadioButton("CMT"+i);
-			CVRPBenchmarki.setUserData("CMT"+i);
+		List<RadioButton> otherButtons = new ArrayList<RadioButton>();
+		
+		for (int i = 2; i < 15; i++) {
+			CVRPBenchmarki = new RadioButton("CMT" + i);
+			CVRPBenchmarki.setUserData("CMT" + i);
 			CVRPBenchmarki.setSelected(false);
 			CVRPBenchmarki.setToggleGroup(mapGroup);
 			CVRPBenchmarki.setVisible(true);
 			otherButtons.add(CVRPBenchmarki);
 		}
-		
+
 		debugModeCheckBox = new CheckBox("Debug Mode");
 		debugModeCheckBox.setSelected(false);
 
@@ -144,16 +139,15 @@ public class StartWindow extends Application{
 		layout.getChildren().add(randomCities);
 		layout.getChildren().add(usCities);
 		layout.getChildren().add(CVRPBenchmark1);
-		for(RadioButton button : otherButtons)
-			layout.getChildren().add(button);
 		
+		for (RadioButton button : otherButtons)
+			layout.getChildren().add(button);
+
 		layout.getChildren().add(debugModeCheckBox);
 		layout.getChildren().add(startButton);
-		layout.setAlignment(Pos.CENTER); 
-		
+		layout.setAlignment(Pos.CENTER);
 
-		TSPButton.setOnAction( __ ->
-		{
+		TSPButton.setOnAction(__ -> {
 			defaultMapButton.setVisible(true);
 			defaultMapButton.setSelected(true);
 			usCapitals.setVisible(true);
@@ -161,15 +155,14 @@ public class StartWindow extends Application{
 			usCities.setVisible(true);
 
 			CVRPBenchmark1.setVisible(false);
-			for(RadioButton button : otherButtons)
+			for (RadioButton button : otherButtons)
 				button.setVisible(false);
 		});
-		
-		CVRPButton.setOnAction( __ ->
-		{
+
+		CVRPButton.setOnAction(__ -> {
 			CVRPBenchmark1.setVisible(true);
 			CVRPBenchmark1.setSelected(true);
-			for(RadioButton button : otherButtons)
+			for (RadioButton button : otherButtons)
 				button.setVisible(true);
 
 			defaultMapButton.setVisible(false);
@@ -177,22 +170,22 @@ public class StartWindow extends Application{
 			randomCities.setVisible(false);
 			usCities.setVisible(false);
 		});
-		
+
 		s = new Scene(layout, 600, 600);
 		primaryStage.setScene(s);
-		
+
 		primaryStage.show();
 	}
 
 	public static Stage getStage() {
 		return stage;
 	}
-	
+
 	@Override
-	public void stop()throws Exception {
-	    System.out.println("Closing application");
-	    
-	    SREBootstrap bootstrap = SRE.getBootstrap();
+	public void stop() throws Exception {
+		System.out.println("Closing application");
+
+		SREBootstrap bootstrap = SRE.getBootstrap();
 		bootstrap.startAgent(DeathAgent.class);
 	}
 }
