@@ -75,18 +75,12 @@ agent MainAgent {
 	def startAgents() : void {
 		if (type.equals("TSP")) {
 			for (startCity : env.getCities()) {
-				synchronized (met) {
-					// TODO replace Integers/Longs/etc by AtomicInteger or other thread-safe structures
-					met.increaseActiveAgents();
-				}
+				met.increaseActiveAgents();
 				spawn(TravelerAgent, env, met, startCity, type, isDebugMode);
 			}
 		}
 		if (type.equals("CVRP")) {
-			synchronized (met) {
-				// TODO replace Integers/Longs/etc by AtomicInteger or other thread-safe structures
-				met.increaseActiveAgents();
-			}
+			met.increaseActiveAgents();
 			// We assume the Ressupply is always gonna be on city 1
 			// TODO : spawn more than 1 agent per round
 			spawn(TravelerAgent, env, met, env.getCities().get(0), type, isDebugMode);
@@ -95,9 +89,7 @@ agent MainAgent {
 
 	// Records the result of a finished agent
 	on TravelsFinished {
-		synchronized (met) {
-			met.decreaseActiveAgents();
-		}
+		met.decreaseActiveAgents();
 		var pathTaken : List<Road> = occurrence.pathTaken;
 		var timeTaken : Long = occurrence.timeTaken;
 
@@ -118,9 +110,7 @@ agent MainAgent {
 		// Updates weights & starts a new round
 		// We assume by the time an agent gets there, more have been spawned if planned
 		if (met.activeAgents == 0) {
-			synchronized (met) {
-				met.increaseElapsedRounds();
-			}
+			met.increaseElapsedRounds();
 			env.updateWeights();
 			if (isDebugMode) {
 				info("New round")

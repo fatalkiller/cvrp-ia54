@@ -3,6 +3,7 @@ package fr.utbm.info.ia54.cvrp.model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
@@ -17,11 +18,10 @@ public class Metrics {
 	private Calendar startTime;
 	private String fastestTime;
 	private String fastestPath;
-	// TODO : try replacing with concurrentList
 	private List<Road> fastestPathObj; // Use this to know which path to highlight
-	private Integer roundsElapsed;
-	private Integer totalCities;
-	private Integer activeAgents;
+	private AtomicInteger roundsElapsed = new AtomicInteger();
+	private AtomicInteger totalCities = new AtomicInteger();
+	private AtomicInteger activeAgents = new AtomicInteger();
 
 	public Metrics(String type, Environment env) {
 		this.type = type;
@@ -34,9 +34,9 @@ public class Metrics {
 		fastestTime = "TBD";
 		fastestPath = "TBD";
 		fastestPathObj = new ArrayList<Road>();
-		roundsElapsed = 0;
-		totalCities = env.cities.size();
-		activeAgents = 0;
+		roundsElapsed.set(0);
+		totalCities.set(env.cities.size());
+		activeAgents.set(0);
 	}
 
 	public Text getMetrics() {
@@ -54,7 +54,7 @@ public class Metrics {
 	}
 
 	public void increaseElapsedRounds() {
-		this.roundsElapsed++;
+		this.roundsElapsed.incrementAndGet();
 	}
 
 	public void setFormattedFastestPath(List<Road> pathTaken) {
@@ -191,35 +191,35 @@ public class Metrics {
 		this.fastestPathObj = fastestPathObj;
 	}
 
-	public Integer getRoundsElapsed() {
+	public AtomicInteger getRoundsElapsed() {
 		return roundsElapsed;
 	}
 
 	public void setRoundsElapsed(Integer roundsElapsed) {
-		this.roundsElapsed = roundsElapsed;
+		this.roundsElapsed.set(roundsElapsed);
 	}
 
-	public Integer getTotalCities() {
+	public AtomicInteger getTotalCities() {
 		return totalCities;
 	}
 
 	public void setTotalCities(Integer totalCities) {
-		this.totalCities = totalCities;
+		this.totalCities.set(totalCities);
 	}
 
-	public Integer getActiveAgents() {
+	public AtomicInteger getActiveAgents() {
 		return activeAgents;
 	}
 
 	public void setActiveAgents(Integer activeAgents) {
-		this.activeAgents = activeAgents;
+		this.activeAgents.set(activeAgents);
 	}
 
 	public void increaseActiveAgents() {
-		this.activeAgents++;
+		this.activeAgents.incrementAndGet();
 	}
 
 	public void decreaseActiveAgents() {
-		this.activeAgents--;
+		this.activeAgents.decrementAndGet();
 	}
 }
