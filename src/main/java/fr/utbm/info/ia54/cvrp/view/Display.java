@@ -22,17 +22,6 @@ public class Display {
 		});
 	}
 
-	public void changeDisplayFrameSize(Integer width, Integer height) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				StartWindow.getStage().setWidth(width);
-				StartWindow.getStage().setHeight(height);
-				StartWindow.getStage().centerOnScreen();
-			}
-		});
-	}
-
 	public void displaySimulationFrame() {
 
 		// I dont get it but somehow if I dont include the group stuff here I get errors
@@ -44,7 +33,6 @@ public class Display {
 				Group g = new Group();
 
 				// Things to display
-
 				g.getChildren().addAll(environment.getCitiesRepresentation());
 				if (debug) {
 					g.getChildren().addAll(environment.getCitiesNames());
@@ -63,10 +51,11 @@ public class Display {
 				// Assuming stuff is already being displayed
 				// stage.show();
 
-				Scene scene = new Scene(g, Screen.getPrimary().getBounds().getWidth() * 3 / 4,
-						Screen.getPrimary().getBounds().getHeight() * 3 / 4);
-
+				Scene scene = new Scene(g, Screen.getPrimary().getBounds().getWidth(),
+						Screen.getPrimary().getBounds().getHeight());
+				
 				StartWindow.getStage().setScene(scene);
+				StartWindow.getStage().setMaximized(true);
 			}
 		});
 	}

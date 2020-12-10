@@ -46,12 +46,8 @@ public class StartWindow extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		StartWindow.stage = primaryStage;
-
-		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-		primaryStage.setWidth(screenBounds.getMaxX());
-		primaryStage.setHeight(screenBounds.getMaxY());
-
 		primaryStage.setTitle("Launching options");
+		primaryStage.setMaximized(true);
 
 		layout = new VBox();
 		layout.setSpacing(20);
@@ -171,9 +167,8 @@ public class StartWindow extends Application {
 			usCities.setVisible(false);
 		});
 
-		s = new Scene(layout, 600, 600);
+		s = new Scene(layout, 600, 900);
 		primaryStage.setScene(s);
-
 		primaryStage.show();
 	}
 
