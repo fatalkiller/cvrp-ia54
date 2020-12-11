@@ -65,7 +65,7 @@ agent TravelerAgent {
 		var road : Road = null;
 		while ((visitedCities.size() != env.cities.size()) || currentCity != startingCity) {
 			if (type.equals("CVRP")) {
-				if (charge + currentCity.getCapacity() >= 0) {
+				if (charge + currentCity.getCapacity() >= 0 && (!visitedCities.contains(currentCity) || currentCity===startingCity)) {
 					charge = Math.min(charge + currentCity.getCapacity(), maxCharge);
 					visitedCities.add(currentCity);
 				}

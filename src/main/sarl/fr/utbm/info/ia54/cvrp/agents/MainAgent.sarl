@@ -105,6 +105,7 @@ agent MainAgent {
 
 		for (road : pathTaken) {
 			road.increaseFutureWeight(timeTaken);
+			//TODO : maybe some form of evaportation
 		}
 
 		// Updates weights & starts a new round
