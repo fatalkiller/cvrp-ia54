@@ -22,6 +22,7 @@ agent MainAgent {
 	// Launching options
 	var type : String
 	var map : String
+	var simultaneousAgents : Integer
 	var isDebugMode : Boolean
 
 	uses Logging, Lifecycle, Schedules
@@ -34,7 +35,8 @@ agent MainAgent {
 		// Retrieve passed parameters like so
 		type = occurrence.parameters.get(0) as String;
 		map = occurrence.parameters.get(1) as String;
-		isDebugMode = occurrence.parameters.get(2) as Boolean;
+		simultaneousAgents = occurrence.parameters.get(2) as Integer;
+		isDebugMode = occurrence.parameters.get(3) as Boolean;
 		info(type)
 		info(map)
 		info(isDebugMode)
@@ -80,10 +82,12 @@ agent MainAgent {
 			}
 		}
 		if (type.equals("CVRP")) {
-			met.increaseActiveAgents();
-			// We assume the Ressupply is always gonna be on city 1
-			// TODO : spawn more than 1 agent per round
-			spawn(TravelerAgent, env, met, env.getCities().get(0), type, isDebugMode);
+			var i : Integer;
+			for(i=0;i<simultaneousAgents;i++)
+			{
+				met.increaseActiveAgents();
+				spawn(TravelerAgent, env, met, env.getCities().get(0), type, isDebugMode);
+			}
 		}
 	}
 

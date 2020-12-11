@@ -17,10 +17,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
 
 public class StartWindow extends Application {
 
@@ -33,14 +37,15 @@ public class StartWindow extends Application {
 	private CheckBox debugModeCheckBox;
 	private ToggleGroup mapGroup;
 	private ToggleGroup typeGroup;
+	private TextField numberField;
 
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
 
-	public static void spawnMainAgent(String type, String map, boolean isDebugMode) throws Exception {
+	public static void spawnMainAgent(String type, String map, Integer simultaneousAgents, boolean isDebugMode) throws Exception {
 		SREBootstrap bootstrap = SRE.getBootstrap();
-		bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, isDebugMode);
+		bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, simultaneousAgents, isDebugMode);
 	}
 
 	@Override
@@ -61,9 +66,10 @@ public class StartWindow extends Application {
 
 					String type = typeGroup.getSelectedToggle().getUserData().toString();
 					String map = mapGroup.getSelectedToggle().getUserData().toString();
+					Integer simultaneousAgents = Integer.parseInt(numberField.getText());
 					boolean isDebugMode = debugModeCheckBox.isSelected();
 					// Pass stuff here as well
-					StartWindow.spawnMainAgent(type, map, isDebugMode);
+					StartWindow.spawnMainAgent(type, map, simultaneousAgents, isDebugMode);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -139,6 +145,14 @@ public class StartWindow extends Application {
 		for (RadioButton button : otherButtons)
 			layout.getChildren().add(button);
 
+		Text infoDisplay = new Text("Number of CVRP agents to run simultaneously :");
+		layout.getChildren().add(infoDisplay);
+		
+		numberField = new TextField();
+		numberField.setMaxSize(100, 50);
+		numberField.setText("20");
+		layout.getChildren().add(numberField);
+
 		layout.getChildren().add(debugModeCheckBox);
 		layout.getChildren().add(startButton);
 		layout.setAlignment(Pos.CENTER);
@@ -151,6 +165,8 @@ public class StartWindow extends Application {
 			usCities.setVisible(true);
 
 			CVRPBenchmark1.setVisible(false);
+			infoDisplay.setVisible(false);
+			numberField.setVisible(false);
 			for (RadioButton button : otherButtons)
 				button.setVisible(false);
 		});
@@ -158,6 +174,8 @@ public class StartWindow extends Application {
 		CVRPButton.setOnAction(__ -> {
 			CVRPBenchmark1.setVisible(true);
 			CVRPBenchmark1.setSelected(true);
+			infoDisplay.setVisible(true);
+			numberField.setVisible(true);
 			for (RadioButton button : otherButtons)
 				button.setVisible(true);
 
@@ -166,6 +184,7 @@ public class StartWindow extends Application {
 			randomCities.setVisible(false);
 			usCities.setVisible(false);
 		});
+		
 
 		s = new Scene(layout, 600, 900);
 		primaryStage.setScene(s);
