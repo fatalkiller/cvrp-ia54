@@ -103,6 +103,11 @@ agent TravelerAgent {
 		var rng : Float = new Random().nextFloat();
 
 		availableRoads = env.getAdjacentRoads(currentCity);
+		//Assuming all cities are interconnected, we can remove roads linking to previously visited cities
+		//Unless the previously visited city is the depot
+		removeRoadsToPreviouslyVisitedCities(availableRoads);
+		
+		
 		Road.sortRoadsByWeights(availableRoads);
 
 		for (road : availableRoads) {
@@ -140,6 +145,22 @@ agent TravelerAgent {
 			chosenRoad = availableRoads.get(0);
 		}
 		return chosenRoad;
+	}
+	
+	def removeRoadsToPreviouslyVisitedCities(roads : List<Road>) : void
+	{
+		var i : int = 0;
+		while(i<roads.size())
+		{
+			if (roads.get(i).travel(currentCity) !== startingCity && visitedCities.contains(roads.get(i).travel(currentCity)))
+			{
+				roads.remove(roads.get(i))
+			}
+			else
+			{
+				i++
+			}
+		}
 	}
 
 	on ExitApplicationEvent {

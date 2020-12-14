@@ -42,7 +42,7 @@ agent MainAgent {
 		info(isDebugMode)
 
 		env = new Environment(type, map);
-		met = new Metrics(type, env);
+		met = new Metrics(type, env, simultaneousAgents);
 
 		info("Environment initialized.");
 

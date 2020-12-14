@@ -23,7 +23,7 @@ public class Metrics {
 	private AtomicInteger totalCities = new AtomicInteger();
 	private AtomicInteger activeAgents = new AtomicInteger();
 
-	public Metrics(String type, Environment env) {
+	public Metrics(String type, Environment env, Integer simultaneousAgents) {
 		this.type = type;
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 		display = new Text();
@@ -35,7 +35,14 @@ public class Metrics {
 		fastestPath = "TBD";
 		fastestPathObj = new ArrayList<Road>();
 		roundsElapsed.set(0);
-		totalCities.set(env.cities.size());
+		if(type.equals("TSP"))
+		{
+			totalCities.set(env.cities.size());
+		}
+		else if(type.equals("CVRP"))
+		{
+			totalCities.set(simultaneousAgents);
+		}
 		activeAgents.set(0);
 	}
 
