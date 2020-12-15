@@ -17,10 +17,14 @@ public class Environment {
 
 	public List<City> cities;
 	public List<Road> roads;
+	private Float evaporationProportion;
+	private Float evaporationConstant;
 
-	public Environment(String type, String map) {
+	public Environment(String type, String map, Float evaporationProportion, Float evaporationConstant) {
 		cities = new ArrayList<City>();
 		roads = new ArrayList<Road>();
+		this.evaporationProportion=evaporationProportion;
+		this.evaporationConstant=evaporationConstant;
 		if (map.equals("Default Map")) {
 			makeDefaultMap();
 		} else {
@@ -247,8 +251,8 @@ public class Environment {
 
 	public void updateWeights() {
 		for (Road road : roads) {
-			road.setWeight(road.getWeight() + road.getFutureWeight());
-			road.setFutureWeight(new Long(0));
+			road.setWeight(((1-evaporationProportion)*road.getWeight())+(evaporationConstant/road.getFutureWeight()));
+			road.setFutureWeight(new Float(0));
 		}
 	}
 

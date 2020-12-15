@@ -22,11 +22,12 @@ public class Road {
 	private Long timeTaken;
 
 	// Deciding factor on which road to take
-	private Long weight;
+	private Float weight;
 
 	// Weights to be added next round
-	private Long futureWeight;
+	private Float futureWeight;
 
+	//This is used to measure time taken by all agents every round, which will be used to calculate future weights
 	public void increaseFutureWeight(Long increase) {
 		this.futureWeight += increase;
 	}
@@ -117,11 +118,11 @@ public class Road {
 		this.city1 = null;
 		this.city2 = null;
 		this.timeTaken = new Long(0);
-		this.weight = new Long(0);
-		this.futureWeight = new Long(0);
+		this.weight = new Float(0);
+		this.futureWeight = new Float(0);
 	}
 
-	public Road(City city1, City city2, Long timeTaken, Long weight, Long futureWeight) {
+	public Road(City city1, City city2, Long timeTaken, Float weight, Float futureWeight) {
 		super();
 		this.city1 = city1;
 		this.city2 = city2;
@@ -154,19 +155,19 @@ public class Road {
 		this.timeTaken = timeTaken;
 	}
 
-	public Long getWeight() {
+	public Float getWeight() {
 		return weight;
 	}
 
-	public void setWeight(Long weight) {
+	public void setWeight(Float weight) {
 		this.weight = weight;
 	}
 
-	public Long getFutureWeight() {
+	public Float getFutureWeight() {
 		return futureWeight;
 	}
 
-	public void setFutureWeight(Long futureWeight) {
+	public void setFutureWeight(Float futureWeight) {
 		this.futureWeight = futureWeight;
 	}
 

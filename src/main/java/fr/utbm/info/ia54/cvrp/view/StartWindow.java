@@ -12,19 +12,15 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.converter.NumberStringConverter;
 
 public class StartWindow extends Application {
 
@@ -37,15 +33,22 @@ public class StartWindow extends Application {
 	private CheckBox debugModeCheckBox;
 	private ToggleGroup mapGroup;
 	private ToggleGroup typeGroup;
-	private TextField numberField;
+	
+	
+	//Constants to change around
+	private TextField simultaneousAgentsField;
+	private TextField evaporationProportionField;
+	private TextField evaporationConstantField;
+	private TextField pheromoneInfluenceField;
+	private TextField distanceInfluenceField;
 
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
 
-	public static void spawnMainAgent(String type, String map, Integer simultaneousAgents, boolean isDebugMode) throws Exception {
+	public static void spawnMainAgent(String type, String map, Integer simultaneousAgents, Float evaporationProportion, Float evaporationConstant, Float pheromoneInfluence, Float distanceInfluence, boolean isDebugMode) throws Exception {
 		SREBootstrap bootstrap = SRE.getBootstrap();
-		bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, simultaneousAgents, isDebugMode);
+		bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, simultaneousAgents, evaporationProportion, evaporationConstant, pheromoneInfluence, distanceInfluence, isDebugMode);
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class StartWindow extends Application {
 		primaryStage.setMaximized(true);
 
 		layout = new VBox();
-		layout.setSpacing(20);
+		layout.setSpacing(5);
 
 		startButton = new Button("Start Colony");
 
@@ -66,10 +69,14 @@ public class StartWindow extends Application {
 
 					String type = typeGroup.getSelectedToggle().getUserData().toString();
 					String map = mapGroup.getSelectedToggle().getUserData().toString();
-					Integer simultaneousAgents = Integer.parseInt(numberField.getText());
+					Integer simultaneousAgents = Integer.parseInt(simultaneousAgentsField.getText());
+					Float evaporationProportion = Float.parseFloat(evaporationProportionField.getText());
+					Float evaporationConstant = Float.parseFloat(evaporationConstantField.getText());
+					Float pheromoneInfluence = Float.parseFloat(pheromoneInfluenceField.getText());
+					Float distanceInfluence = Float.parseFloat(distanceInfluenceField.getText());
 					boolean isDebugMode = debugModeCheckBox.isSelected();
 					// Pass stuff here as well
-					StartWindow.spawnMainAgent(type, map, simultaneousAgents, isDebugMode);
+					StartWindow.spawnMainAgent(type, map, simultaneousAgents, evaporationProportion, evaporationConstant, pheromoneInfluence, distanceInfluence, isDebugMode);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -145,13 +152,45 @@ public class StartWindow extends Application {
 		for (RadioButton button : otherButtons)
 			layout.getChildren().add(button);
 
-		Text infoDisplay = new Text("Number of CVRP agents to run simultaneously :");
-		layout.getChildren().add(infoDisplay);
+		Text infoDisplay1 = new Text("Number of CVRP agents to run simultaneously (Integer) :");
+		layout.getChildren().add(infoDisplay1);
 		
-		numberField = new TextField();
-		numberField.setMaxSize(100, 50);
-		numberField.setText("20");
-		layout.getChildren().add(numberField);
+		simultaneousAgentsField = new TextField();
+		simultaneousAgentsField.setMaxSize(100, 50);
+		simultaneousAgentsField.setText("20");
+		layout.getChildren().add(simultaneousAgentsField);
+
+		Text infoDisplay2 = new Text("Evaporation proportion (0-1) :");
+		layout.getChildren().add(infoDisplay2);
+		
+		evaporationProportionField = new TextField();
+		evaporationProportionField.setMaxSize(100, 50);
+		evaporationProportionField.setText("0.5");
+		layout.getChildren().add(evaporationProportionField);
+
+		Text infoDisplay3 = new Text("Pheromone Constant (Real Positive) :");
+		layout.getChildren().add(infoDisplay3);
+		
+		evaporationConstantField = new TextField();
+		evaporationConstantField.setMaxSize(100, 50);
+		evaporationConstantField.setText("10");
+		layout.getChildren().add(evaporationConstantField);
+
+		Text infoDisplay4 = new Text("pheromone influence (Real Positive) :");
+		layout.getChildren().add(infoDisplay4);
+		
+		pheromoneInfluenceField = new TextField();
+		pheromoneInfluenceField.setMaxSize(100, 50);
+		pheromoneInfluenceField.setText("0.8");
+		layout.getChildren().add(pheromoneInfluenceField);
+
+		Text infoDisplay5 = new Text("distance influence (Real Positive) :");
+		layout.getChildren().add(infoDisplay5);
+		
+		distanceInfluenceField = new TextField();
+		distanceInfluenceField.setMaxSize(100, 50);
+		distanceInfluenceField.setText("1.2");
+		layout.getChildren().add(distanceInfluenceField);
 
 		layout.getChildren().add(debugModeCheckBox);
 		layout.getChildren().add(startButton);
@@ -165,8 +204,8 @@ public class StartWindow extends Application {
 			usCities.setVisible(true);
 
 			CVRPBenchmark1.setVisible(false);
-			infoDisplay.setVisible(false);
-			numberField.setVisible(false);
+			infoDisplay1.setVisible(false);
+			simultaneousAgentsField.setVisible(false);
 			for (RadioButton button : otherButtons)
 				button.setVisible(false);
 		});
@@ -174,8 +213,8 @@ public class StartWindow extends Application {
 		CVRPButton.setOnAction(__ -> {
 			CVRPBenchmark1.setVisible(true);
 			CVRPBenchmark1.setSelected(true);
-			infoDisplay.setVisible(true);
-			numberField.setVisible(true);
+			infoDisplay1.setVisible(true);
+			simultaneousAgentsField.setVisible(true);
 			for (RadioButton button : otherButtons)
 				button.setVisible(true);
 

@@ -16,14 +16,22 @@ import fr.utbm.info.ia54.cvrp.model.Road
 // Handle synchronization issues with synchronized() when needed
 @SuppressWarnings("discouraged_occurrence_readonly_use", "potential_field_synchronization_problem")
 agent MainAgent {
+	
 	var env : Environment; // Stores the position of the objects in the simulation
 	var disp : Display; // Handles the view
 	var met : Metrics; // Stores information on the simulation
+	
 	// Launching options
 	var type : String
 	var map : String
-	var simultaneousAgents : Integer
 	var isDebugMode : Boolean
+	
+	// constants
+	var simultaneousAgents : Integer
+	var evaporationProportion : Float
+	var evaporationConstant : Float
+	var pheromoneInfluence : Float
+	var distanceInfluence : Float
 
 	uses Logging, Lifecycle, Schedules
 
@@ -36,12 +44,16 @@ agent MainAgent {
 		type = occurrence.parameters.get(0) as String;
 		map = occurrence.parameters.get(1) as String;
 		simultaneousAgents = occurrence.parameters.get(2) as Integer;
-		isDebugMode = occurrence.parameters.get(3) as Boolean;
+		evaporationProportion = occurrence.parameters.get(3) as Float;
+		evaporationConstant = occurrence.parameters.get(4) as Float;
+		pheromoneInfluence = occurrence.parameters.get(5) as Float;
+		distanceInfluence = occurrence.parameters.get(6) as Float;
+		isDebugMode = occurrence.parameters.get(7) as Boolean;
 		info(type)
 		info(map)
 		info(isDebugMode)
 
-		env = new Environment(type, map);
+		env = new Environment(type, map, evaporationProportion, evaporationConstant);
 		met = new Metrics(type, env, simultaneousAgents);
 
 		info("Environment initialized.");
@@ -86,7 +98,7 @@ agent MainAgent {
 			for(i=0;i<simultaneousAgents;i++)
 			{
 				met.increaseActiveAgents();
-				spawn(TravelerAgent, env, met, env.getCities().get(0), type, isDebugMode);
+				spawn(TravelerAgent, env, met, env.getCities().get(0), type, pheromoneInfluence, distanceInfluence, isDebugMode);
 			}
 		}
 	}
@@ -108,8 +120,8 @@ agent MainAgent {
 		}
 
 		for (road : pathTaken) {
+			//TODO : make futureweight an atomic type cus chances are, this is gonna get concurrent access
 			road.increaseFutureWeight(timeTaken);
-			//TODO : maybe some form of evaportation
 		}
 
 		// Updates weights & starts a new round

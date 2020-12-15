@@ -33,6 +33,8 @@ agent TravelerAgent {
 	var type : String;
 	var charge : Long;
 	var maxCharge : Long;
+	var pheromoneInfluence : Float;
+	var distanceInfluence : Float;
 
 	uses Logging, Lifecycle, DefaultContextInteractions
 
@@ -42,7 +44,9 @@ agent TravelerAgent {
 
 		startingCity = occurrence.parameters.get(2) as City;
 		type = occurrence.parameters.get(3) as String;
-		isDebugMode = occurrence.parameters.get(4) as Boolean;
+		pheromoneInfluence = occurrence.parameters.get(4) as Float;
+		distanceInfluence = occurrence.parameters.get(5) as Float;
+		isDebugMode = occurrence.parameters.get(6) as Boolean;
 
 		currentCity = startingCity;
 		charge = new Long(0);
@@ -103,6 +107,7 @@ agent TravelerAgent {
 		var rng : Float = new Random().nextFloat();
 
 		availableRoads = env.getAdjacentRoads(currentCity);
+		
 		//Assuming all cities are interconnected, we can remove roads linking to previously visited cities
 		//Unless the previously visited city is the depot
 		removeRoadsToPreviouslyVisitedCities(availableRoads);
