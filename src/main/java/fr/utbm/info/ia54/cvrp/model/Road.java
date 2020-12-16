@@ -53,14 +53,14 @@ public class Road {
 		return endingCity;
 	}
 
-	public static void sortRoadsByWeights(List<Road> roads) {
+	public static void sortRoadsByWeights(List<Road> roads, Float pheromoneInfluence, Float distanceInfluence) {
 		Collections.sort(roads, new Comparator<Road>() {
 			@Override
 			public int compare(Road r1, Road r2) {
 				int res = 0;
-				if (r1.weight < r2.weight) {
+				if (Math.pow(r1.weight, pheromoneInfluence)*Math.pow(r1.timeTaken, distanceInfluence) < Math.pow(r2.weight, pheromoneInfluence)*Math.pow(r2.timeTaken, distanceInfluence)) {
 					res = -1;
-				} else if (r1.weight > r2.weight) {
+				} else if (Math.pow(r1.weight, pheromoneInfluence)*Math.pow(r1.timeTaken, distanceInfluence) > Math.pow(r2.weight, pheromoneInfluence)*Math.pow(r2.timeTaken, distanceInfluence)) {
 					res = 1;
 				}
 				return res;
@@ -118,7 +118,9 @@ public class Road {
 		this.city1 = null;
 		this.city2 = null;
 		this.timeTaken = new Long(0);
-		this.weight = new Float(0);
+		//TODO : doesnt seem like having 0 weight works (division by 0 etc issues) so Im starting with 1 on weights
+		//I dont think this should cause any issues but Im marking this with a todo just in case.
+		this.weight = new Float(1);
 		this.futureWeight = new Float(0);
 	}
 

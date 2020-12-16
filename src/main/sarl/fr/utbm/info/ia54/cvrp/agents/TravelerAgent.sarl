@@ -97,61 +97,51 @@ agent TravelerAgent {
 	// Maybe use SARL to build several road picking skills to test different methods of optimization
 	// Maybe double check if all cities are connected if ever using custom maps ?
 	def pickRoad() : Road {
+		
 		var chosenRoad : Road = null;
 		var availableRoads : List<Road> = new ArrayList<Road>();
-		var reverseWeights : Float = new Float(0);
-		var NormalizedReverseWeights : Float = new Float(0);
-		var cumulativeNormalizedReverseWeights : Float = new Float(0);
-		var totalWeights : Float = new Float(0);
-		var totalReverseWeights : Float = new Float(0);
+		var totalWeights : double = 0;
 		var rng : Float = new Random().nextFloat();
+		var cumulativeProb : double = 0;
 
 		availableRoads = env.getAdjacentRoads(currentCity);
-		
-		//Assuming all cities are interconnected, we can remove roads linking to previously visited cities
-		//Unless the previously visited city is the depot
 		removeRoadsToPreviouslyVisitedCities(availableRoads);
-		
-		
-		Road.sortRoadsByWeights(availableRoads);
+		Road.sortRoadsByWeights(availableRoads, pheromoneInfluence, distanceInfluence);
 
-		for (road : availableRoads) {
-			totalWeights = totalWeights + road.weight;
-		}
-		for (road : availableRoads) {
-			totalReverseWeights = totalReverseWeights + totalWeights - road.weight;
+		for(road : availableRoads)
+		{
+			totalWeights+=Math.pow(road.weight, pheromoneInfluence)*Math.pow(road.timeTaken, distanceInfluence);
 		}
 
-		for (road : availableRoads) {
-			if (chosenRoad === null) // If road not yet chosen, pick it
+		//TODO : cumulativeProb turns into NaN after a few rounds, investigate why
+		//Update : looks like its because totalWeights quickly turns into INFINITY
+		//Maybe I need to tweak the constants ?
+		for (road : availableRoads) 
+		{
+			if(chosenRoad===null)
 			{
-				if (totalWeights == 0 || totalReverseWeights == 0 || true) {
-					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights + 1f / availableRoads.size();
-					if (rng < cumulativeNormalizedReverseWeights) {
-						chosenRoad = road;
-					}
-				} else {
-					// TODO : We're gonna need an algorithm that promotes exploration a lot more
-					// Also maybe make it priorise startingCity when charge is really low ?
-					// For now Ill just make it purely random (see warning above)
-					// We want smaller weights to be picked more often so we used reverse weights
-					reverseWeights = totalWeights - road.weight;
-					NormalizedReverseWeights = reverseWeights / totalReverseWeights;
-					cumulativeNormalizedReverseWeights = cumulativeNormalizedReverseWeights + NormalizedReverseWeights;
-					if (rng < cumulativeNormalizedReverseWeights) {
-						chosenRoad = road;
-					}
+				cumulativeProb +=
+					(Math.pow(road.weight, pheromoneInfluence) * Math.pow(road.timeTaken, distanceInfluence)) /
+						totalWeights;
+				if (rng < cumulativeProb) 
+				{
+					chosenRoad = road;
 				}
 			}
 		}
-		// To correct rng rounding error
-		if (chosenRoad === null) {
-			info("RNG Rounding error, picking first road available instead.")
-			chosenRoad = availableRoads.get(0);
+		
+		// To correct issues when I was unable to pick a road, just pick a random one
+		if (chosenRoad === null) 
+		{
+			info(totalWeights)
+			info("Was unable to pick a road, picking a random road instead.")
+			chosenRoad = availableRoads.get(new Random().nextInt(availableRoads.size()));
 		}
 		return chosenRoad;
 	}
-	
+
+	// Assuming all cities are interconnected, we can remove roads linking to previously visited cities
+	// Unless the previously visited city is the depot
 	def removeRoadsToPreviouslyVisitedCities(roads : List<Road>) : void
 	{
 		var i : int = 0;
