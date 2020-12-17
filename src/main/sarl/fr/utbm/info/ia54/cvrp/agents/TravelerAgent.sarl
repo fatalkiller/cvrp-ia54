@@ -28,7 +28,7 @@ agent TravelerAgent {
 	var currentCity : City;
 	var visitedCities : Set<City>;
 	var travelledRoads : List<Road>;
-	var travelTime : Long;
+	var travelTime : Float;
 	var isDebugMode : Boolean;
 	var type : String;
 	var charge : Long;
@@ -54,7 +54,7 @@ agent TravelerAgent {
 		visitedCities = new HashSet<City>();
 		visitedCities.add(startingCity);
 		travelledRoads = new ArrayList<Road>();
-		travelTime = new Long(0);
+		travelTime = new Float(0);
 
 		loggingName = "Traveler Agent - Round " + met.roundsElapsed + " - Starting city " + startingCity.name;
 
@@ -110,7 +110,7 @@ agent TravelerAgent {
 
 		for(road : availableRoads)
 		{
-			totalWeights+=Math.pow(road.weight, pheromoneInfluence)*Math.pow(road.timeTaken, distanceInfluence);
+			totalWeights+=Math.pow(road.weight, pheromoneInfluence)*Math.pow(1/road.timeTaken, distanceInfluence);
 		}
 
 		//TODO : cumulativeProb turns into NaN after a few rounds, investigate why
@@ -121,7 +121,7 @@ agent TravelerAgent {
 			if(chosenRoad===null)
 			{
 				cumulativeProb +=
-					(Math.pow(road.weight, pheromoneInfluence) * Math.pow(road.timeTaken, distanceInfluence)) /
+					(Math.pow(road.weight, pheromoneInfluence) * Math.pow(1/road.timeTaken, distanceInfluence)) /
 						totalWeights;
 				if (rng < cumulativeProb) 
 				{
@@ -133,7 +133,8 @@ agent TravelerAgent {
 		// To correct issues when I was unable to pick a road, just pick a random one
 		if (chosenRoad === null) 
 		{
-			info(totalWeights)
+			info(totalWeights) //Gets big too soon, becoming infinity and a problem
+			info(cumulativeProb) //Gets to 0 since total goes to infinity
 			info("Was unable to pick a road, picking a random road instead.")
 			chosenRoad = availableRoads.get(new Random().nextInt(availableRoads.size()));
 		}

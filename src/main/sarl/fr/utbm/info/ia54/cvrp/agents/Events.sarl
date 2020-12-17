@@ -9,9 +9,9 @@ event ExitApplicationEvent {}
 //Used to send the data an agent collected back to the main one
 event TravelsFinished {
 	val pathTaken : List<Road>
-	val timeTaken : Long
+	val timeTaken : Float
 
-	new(pathTaken : List<Road>, timeTaken : Long) {
+	new(pathTaken : List<Road>, timeTaken : Float) {
 		this.pathTaken = pathTaken;
 		this.timeTaken = timeTaken;
 	}

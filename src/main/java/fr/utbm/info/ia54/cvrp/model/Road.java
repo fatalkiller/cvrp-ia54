@@ -19,7 +19,7 @@ public class Road {
 
 	// Time it takes to move along this road
 	// This can be any arbitrary unit but let's use minutes for consistency
-	private Long timeTaken;
+	private Float timeTaken;
 
 	// Deciding factor on which road to take
 	private Float weight;
@@ -28,7 +28,7 @@ public class Road {
 	private Float futureWeight;
 
 	//This is used to measure time taken by all agents every round, which will be used to calculate future weights
-	public void increaseFutureWeight(Long increase) {
+	public void increaseFutureWeight(Float increase) {
 		this.futureWeight += increase;
 	}
 
@@ -117,14 +117,14 @@ public class Road {
 		super();
 		this.city1 = null;
 		this.city2 = null;
-		this.timeTaken = new Long(0);
+		this.timeTaken = new Float(0);
 		//TODO : doesnt seem like having 0 weight works (division by 0 etc issues) so Im starting with 1 on weights
 		//I dont think this should cause any issues but Im marking this with a todo just in case.
 		this.weight = new Float(1);
 		this.futureWeight = new Float(0);
 	}
 
-	public Road(City city1, City city2, Long timeTaken, Float weight, Float futureWeight) {
+	public Road(City city1, City city2, Float timeTaken, Float weight, Float futureWeight) {
 		super();
 		this.city1 = city1;
 		this.city2 = city2;
@@ -149,11 +149,11 @@ public class Road {
 		this.city2 = city2;
 	}
 
-	public Long getTimeTaken() {
+	public Float getTimeTaken() {
 		return timeTaken;
 	}
 
-	public void setTimeTaken(Long timeTaken) {
+	public void setTimeTaken(Float timeTaken) {
 		this.timeTaken = timeTaken;
 	}
 

@@ -101,7 +101,7 @@ public class Environment {
 				road.setCity2(getCityByName(this.cities.get(j).getName()));
 				dist = Math.sqrt(Math.pow(this.cities.get(i).getX() - this.cities.get(j).getX(), 2)
 						+ Math.pow(this.cities.get(i).getY() - this.cities.get(j).getY(), 2));
-				road.setTimeTaken(new Long(dist.longValue()));
+				road.setTimeTaken(new Float(dist.longValue()));
 				roads.add(road);
 			}
 		}
@@ -154,61 +154,61 @@ public class Environment {
 		road = new Road();
 		road.setCity1(getCityByName("Strasbourg"));
 		road.setCity2(getCityByName("Paris"));
-		road.setTimeTaken(new Long(270));
+		road.setTimeTaken(new Float(270));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Strasbourg"));
 		road.setCity2(getCityByName("Belfort"));
-		road.setTimeTaken(new Long(105));
+		road.setTimeTaken(new Float(105));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Strasbourg"));
 		road.setCity2(getCityByName("Toulouse"));
-		road.setTimeTaken(new Long(600));
+		road.setTimeTaken(new Float(600));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Strasbourg"));
 		road.setCity2(getCityByName("Marseille"));
-		road.setTimeTaken(new Long(480));
+		road.setTimeTaken(new Float(480));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Paris"));
 		road.setCity2(getCityByName("Belfort"));
-		road.setTimeTaken(new Long(300));
+		road.setTimeTaken(new Float(300));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Paris"));
 		road.setCity2(getCityByName("Toulouse"));
-		road.setTimeTaken(new Long(420));
+		road.setTimeTaken(new Float(420));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Paris"));
 		road.setCity2(getCityByName("Marseille"));
-		road.setTimeTaken(new Long(390));
+		road.setTimeTaken(new Float(390));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Belfort"));
 		road.setCity2(getCityByName("Toulouse"));
-		road.setTimeTaken(new Long(480));
+		road.setTimeTaken(new Float(480));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Belfort"));
 		road.setCity2(getCityByName("Marseille"));
-		road.setTimeTaken(new Long(420));
+		road.setTimeTaken(new Float(420));
 		roads.add(road);
 
 		road = new Road();
 		road.setCity1(getCityByName("Toulouse"));
 		road.setCity2(getCityByName("Marseille"));
-		road.setTimeTaken(new Long(240));
+		road.setTimeTaken(new Float(240));
 		roads.add(road);
 
 	}
