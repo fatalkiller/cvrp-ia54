@@ -149,6 +149,33 @@ public class Metrics {
 		}
 		return roadsRep;
 	}
+	
+	// NOT USED => use if graph created in view
+	public List<List<Road>> getFastestRoads() {
+		List<List<Road>> listRoutes = new ArrayList<List<Road>>();
+		// Not implemented for simple TSP
+		if (type.equals("CVRP")) {
+			int i;
+			
+			// Initialize first route
+			int routeIndex = 0;
+			listRoutes.add(new ArrayList<Road>());
+			
+			for (i = 0; i < fastestPathObj.size(); i++) {
+				// Assuming the depot is city 1, they should always be city1 in roads because of
+				// how roads are generated.
+				if (i > 0 && fastestPathObj.get(i).getCity1().getCapacity() > 0
+						&& fastestPathObj.get(i - 1).getCity1().getCapacity() > 0) {
+					routeIndex++;
+					listRoutes.add(new ArrayList<Road>());
+				}
+
+				// Add current road to corresponding route
+				listRoutes.get(routeIndex).add(fastestPathObj.get(i));
+			}
+		}
+		return listRoutes;
+	}
 
 	public String getType() {
 		return type;

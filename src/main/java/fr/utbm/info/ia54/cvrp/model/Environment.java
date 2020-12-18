@@ -23,8 +23,8 @@ public class Environment {
 	public Environment(String type, String map, Float evaporationProportion, Float evaporationConstant) {
 		cities = new ArrayList<City>();
 		roads = new ArrayList<Road>();
-		this.evaporationProportion=evaporationProportion;
-		this.evaporationConstant=evaporationConstant;
+		this.evaporationProportion = evaporationProportion;
+		this.evaporationConstant = evaporationConstant;
 		if (map.equals("Default Map")) {
 			makeDefaultMap();
 		} else {
@@ -84,7 +84,7 @@ public class Environment {
 
 			}
 			autoGenerateRoads();
-			resizeMap(maxX, maxY);
+			 resizeMap(maxX, maxY);
 		}
 	}
 
@@ -251,7 +251,8 @@ public class Environment {
 
 	public void updateWeights() {
 		for (Road road : roads) {
-			road.setWeight(((1-evaporationProportion)*road.getWeight())+(evaporationConstant/road.getFutureWeight()));
+			road.setWeight(
+					((1 - evaporationProportion) * road.getWeight()) + (evaporationConstant / road.getFutureWeight()));
 			road.setFutureWeight(new Float(0));
 		}
 	}

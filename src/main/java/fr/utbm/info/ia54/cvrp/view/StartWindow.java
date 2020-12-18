@@ -55,7 +55,6 @@ public class StartWindow extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		StartWindow.stage = primaryStage;
 		primaryStage.setTitle("Launching options");
-		primaryStage.setMaximized(true);
 
 		layout = new VBox();
 		layout.setSpacing(5);

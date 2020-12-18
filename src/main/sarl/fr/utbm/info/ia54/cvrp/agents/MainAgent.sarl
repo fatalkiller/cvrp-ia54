@@ -65,9 +65,12 @@ agent MainAgent {
 
 		disp.changeDisplayFrameTitle("Ant colony");
 
+		// Display simulation frame
+		info("Displaying...");
+		disp.displaySimulationFrame();
+
 		// I guess we just want the visuals to update and we want the agents to update ASAP and not wait for next frame
 		// So Im making 2 loops, altho agents arent as much a loop as they are a nonstop exchange
-		info("Displaying...");
 		displayLoop();
 
 		info("Starting to loop...")
@@ -79,9 +82,7 @@ agent MainAgent {
 		val taskMain : AgentTask = task("Main Loop")
 		// Stuff to do every frame :
 		taskMain.every(1000 / framerate) [
-
-			disp.displaySimulationFrame();
-
+			disp.refreshSimulationFrame();
 		]
 	}
 
