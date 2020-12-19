@@ -90,6 +90,8 @@ agent TravelerAgent {
 
 			// change location
 			currentCity = road.travel(currentCity);
+			info("test1 "+this.charge)
+			//info("test2 "+this.visitedCities.size())
 		}
 		emit(new TravelsFinished(travelledRoads, travelTime))
 		killMe;
@@ -107,6 +109,13 @@ agent TravelerAgent {
 
 		availableRoads = env.getAdjacentRoads(currentCity);
 		removeRoadsToPreviouslyVisitedCities(availableRoads);
+		
+		//TODO find better condition
+		if(charge<maxCharge/5)
+		{
+			//We send it back to the depot if chage is low, which should be the first available road
+			chosenRoad=availableRoads.get(0);
+		}
 
 		for (road : availableRoads) {
 			totalWeights += new Float(Math.pow(road.weight, pheromoneInfluence) * Math.pow(1 / road.timeTaken, distanceInfluence));

@@ -113,7 +113,8 @@ agent MainAgent {
 			if (isDebugMode) {
 				info("new record!")
 			}
-			synchronized (met) {
+			synchronized (met) 
+			{
 				met.fastestTime = timeTaken.toString();
 				met.formattedFastestPath = pathTaken;
 			}
