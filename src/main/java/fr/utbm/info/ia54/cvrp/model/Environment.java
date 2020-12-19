@@ -37,8 +37,8 @@ public class Environment {
 			boolean isDemandSection = false;
 			boolean isDepotSection = false;
 			Long capacity = new Long(0);
-			Double maxX = new Double(0);
-			Double maxY = new Double(0);
+			Float maxX = new Float(0);
+			Float maxY = new Float(0);
 			City city;
 			try {
 				scanner = new Scanner(mapFile);
@@ -67,12 +67,12 @@ public class Environment {
 							// Import city information
 							city = new City();
 							city.setName("City " + data[0]);
-							city.setX(Double.parseDouble(data[1]));
-							city.setY(Double.parseDouble(data[2]));
+							city.setX(Float.parseFloat(data[1]));
+							city.setY(Float.parseFloat(data[2]));
 							cities.add(city);
 
-							maxX = Math.max(Double.parseDouble(data[1]), maxX);
-							maxY = Math.max(Double.parseDouble(data[2]), maxY);
+							maxX = Math.max(Float.parseFloat(data[1]), maxX);
+							maxY = Math.max(Float.parseFloat(data[2]), maxY);
 
 						} else {
 							// Import capacity information
@@ -84,14 +84,14 @@ public class Environment {
 
 			}
 			autoGenerateRoads();
-			 resizeMap(maxX, maxY);
+			resizeMap(maxX, maxY);
 		}
 	}
 
 	// Generates roads with timeTaken based on distance
 	public void autoGenerateRoads() {
 		Road road;
-		Double dist;
+		Float dist;
 		int i, j;
 
 		for (i = 0; i < this.cities.size(); i++) {
@@ -99,17 +99,17 @@ public class Environment {
 				road = new Road();
 				road.setCity1(getCityByName(this.cities.get(i).getName()));
 				road.setCity2(getCityByName(this.cities.get(j).getName()));
-				dist = Math.sqrt(Math.pow(this.cities.get(i).getX() - this.cities.get(j).getX(), 2)
-						+ Math.pow(this.cities.get(i).getY() - this.cities.get(j).getY(), 2));
-				road.setTimeTaken(new Float(dist.longValue()));
+				dist = new Float(Math.sqrt(Math.pow(this.cities.get(i).getX() - this.cities.get(j).getX(), 2)
+						+ Math.pow(this.cities.get(i).getY() - this.cities.get(j).getY(), 2)));
+				road.setTimeTaken(new Float(dist));
 				roads.add(road);
 			}
 		}
 	}
 
-	public void resizeMap(Double maxX, Double maxY) {
+	public void resizeMap(Float maxX, Float maxY) {
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-		Double scale = Math.min(maxX / screenBounds.getMaxX(), maxY / screenBounds.getMaxY()) * 2;
+		Float scale = new Float((Math.min(maxX / screenBounds.getMaxX(), maxY / screenBounds.getMaxY()) * 2));
 		for (City city : cities) {
 			city.setX(city.getX() / scale);
 			city.setY(city.getY() / scale);
@@ -121,32 +121,32 @@ public class Environment {
 
 		city = new City();
 		city.setName("Strasbourg");
-		city.setX(new Double(800));
-		city.setY(new Double(200));
+		city.setX(new Float(800));
+		city.setY(new Float(200));
 		cities.add(city);
 
 		city = new City();
 		city.setName("Paris");
-		city.setX(new Double(400));
-		city.setY(new Double(300));
+		city.setX(new Float(400));
+		city.setY(new Float(300));
 		cities.add(city);
 
 		city = new City();
 		city.setName("Belfort");
-		city.setX(new Double(700));
-		city.setY(new Double(400));
+		city.setX(new Float(700));
+		city.setY(new Float(400));
 		cities.add(city);
 
 		city = new City();
 		city.setName("Toulouse");
-		city.setX(new Double(300));
-		city.setY(new Double(600));
+		city.setX(new Float(300));
+		city.setY(new Float(600));
 		cities.add(city);
 
 		city = new City();
 		city.setName("Marseille");
-		city.setX(new Double(650));
-		city.setY(new Double(700));
+		city.setX(new Float(650));
+		city.setY(new Float(700));
 		cities.add(city);
 
 		Road road;

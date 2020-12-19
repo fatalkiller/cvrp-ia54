@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.utbm.info.ia54.cvrp.model.City;
+import fr.utbm.info.ia54.cvrp.tools.AtomicFloat;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
@@ -25,11 +26,12 @@ public class Road {
 	private Float weight;
 
 	// Weights to be added next round
-	private Float futureWeight;
+	private AtomicFloat futureWeight;
 
-	//This is used to measure time taken by all agents every round, which will be used to calculate future weights
+	// This is used to measure time taken by all agents every round, which will be
+	// used to calculate future weights
 	public void increaseFutureWeight(Float increase) {
-		this.futureWeight += increase;
+		this.futureWeight.increase(increase);
 	}
 
 	public Set<City> getCities() {
@@ -58,9 +60,11 @@ public class Road {
 			@Override
 			public int compare(Road r1, Road r2) {
 				int res = 0;
-				if (Math.pow(r1.weight, pheromoneInfluence)*Math.pow(r1.timeTaken, distanceInfluence) < Math.pow(r2.weight, pheromoneInfluence)*Math.pow(r2.timeTaken, distanceInfluence)) {
+				if (Math.pow(r1.weight, pheromoneInfluence) * Math.pow(r1.timeTaken, distanceInfluence) < 
+				    Math.pow(r2.weight, pheromoneInfluence) * Math.pow(r2.timeTaken, distanceInfluence)) {
 					res = -1;
-				} else if (Math.pow(r1.weight, pheromoneInfluence)*Math.pow(r1.timeTaken, distanceInfluence) > Math.pow(r2.weight, pheromoneInfluence)*Math.pow(r2.timeTaken, distanceInfluence)) {
+				} else if (Math.pow(r1.weight, pheromoneInfluence) * Math.pow(r1.timeTaken, distanceInfluence) > 
+						   Math.pow(r2.weight, pheromoneInfluence) * Math.pow(r2.timeTaken, distanceInfluence)) {
 					res = 1;
 				}
 				return res;
@@ -106,7 +110,8 @@ public class Road {
 
 		roadText.setText(this.weight.toString());
 		roadText.setX(this.city1.getX().intValue() + (this.city2.getX().intValue() - this.city1.getX().intValue()) / 2);
-		roadText.setY(this.city1.getY().intValue() + (this.city2.getY().intValue() - this.city1.getY().intValue()) / 2 - textHeight);
+		roadText.setY(this.city1.getY().intValue() + (this.city2.getY().intValue() - this.city1.getY().intValue()) / 2
+				- textHeight);
 
 		return roadText;
 	}
@@ -118,10 +123,12 @@ public class Road {
 		this.city1 = null;
 		this.city2 = null;
 		this.timeTaken = new Float(0);
-		//TODO : doesnt seem like having 0 weight works (division by 0 etc issues) so Im starting with 1 on weights
-		//I dont think this should cause any issues but Im marking this with a todo just in case.
+		// TODO : doesnt seem like having 0 weight works (division by 0 etc issues) so
+		// Im starting with 1 on weights
+		// I dont think this should cause any issues but Im marking this with a todo
+		// just in case.
 		this.weight = new Float(1);
-		this.futureWeight = new Float(0);
+		this.futureWeight = new AtomicFloat(1);
 	}
 
 	public Road(City city1, City city2, Float timeTaken, Float weight, Float futureWeight) {
@@ -130,7 +137,7 @@ public class Road {
 		this.city2 = city2;
 		this.timeTaken = timeTaken;
 		this.weight = weight;
-		this.futureWeight = futureWeight;
+		this.futureWeight = new AtomicFloat(futureWeight);
 	}
 
 	public City getCity1() {
@@ -166,11 +173,11 @@ public class Road {
 	}
 
 	public Float getFutureWeight() {
-		return futureWeight;
+		return futureWeight.floatValue();
 	}
 
 	public void setFutureWeight(Float futureWeight) {
-		this.futureWeight = futureWeight;
+		this.futureWeight.set(futureWeight);
 	}
 
 }

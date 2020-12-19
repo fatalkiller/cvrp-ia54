@@ -69,7 +69,8 @@ agent TravelerAgent {
 		var road : Road = null;
 		while ((visitedCities.size() != env.cities.size()) || currentCity != startingCity) {
 			if (type.equals("CVRP")) {
-				if (charge + currentCity.getCapacity() >= 0 && (!visitedCities.contains(currentCity) || currentCity===startingCity)) {
+				if (charge + currentCity.getCapacity() >= 0 &&
+					(!visitedCities.contains(currentCity) || currentCity === startingCity)) {
 					charge = Math.min(charge + currentCity.getCapacity(), maxCharge);
 					visitedCities.add(currentCity);
 				}
@@ -97,44 +98,38 @@ agent TravelerAgent {
 	// Maybe use SARL to build several road picking skills to test different methods of optimization
 	// Maybe double check if all cities are connected if ever using custom maps ?
 	def pickRoad() : Road {
-		
+
 		var chosenRoad : Road = null;
 		var availableRoads : List<Road> = new ArrayList<Road>();
-		var totalWeights : double = 0;
+		var totalWeights = 0f;
 		var rng : Float = new Random().nextFloat();
-		var cumulativeProb : double = 0;
+		var cumulativeProb = 0f;
 
 		availableRoads = env.getAdjacentRoads(currentCity);
 		removeRoadsToPreviouslyVisitedCities(availableRoads);
-		Road.sortRoadsByWeights(availableRoads, pheromoneInfluence, distanceInfluence);
 
-		for(road : availableRoads)
-		{
-			totalWeights+=Math.pow(road.weight, pheromoneInfluence)*Math.pow(1/road.timeTaken, distanceInfluence);
+		for (road : availableRoads) {
+			totalWeights += new Float(Math.pow(road.weight, pheromoneInfluence) * Math.pow(1 / road.timeTaken, distanceInfluence));
 		}
 
-		//TODO : cumulativeProb turns into NaN after a few rounds, investigate why
-		//Update : looks like its because totalWeights quickly turns into INFINITY
-		//Maybe I need to tweak the constants ?
-		for (road : availableRoads) 
-		{
-			if(chosenRoad===null)
-			{
-				cumulativeProb +=
-					(Math.pow(road.weight, pheromoneInfluence) * Math.pow(1/road.timeTaken, distanceInfluence)) /
-						totalWeights;
-				if (rng < cumulativeProb) 
-				{
+		// TODO : cumulativeProb turns into NaN after a few rounds, investigate why
+		// Update : looks like its because totalWeights quickly turns into INFINITY
+		// Update : after round 0, cumulativeProb = 0, totalWeights = infinity
+		// Maybe I need to tweak the constants ?
+		for (road : availableRoads) {
+			if (chosenRoad === null) {
+				cumulativeProb += new Float(Math.pow(road.weight, pheromoneInfluence) * Math.pow(1 / road.timeTaken, distanceInfluence) /
+						totalWeights);
+				if (rng < cumulativeProb) {
 					chosenRoad = road;
 				}
 			}
 		}
-		
+
 		// To correct issues when I was unable to pick a road, just pick a random one
-		if (chosenRoad === null) 
-		{
-			info(totalWeights) //Gets big too soon, becoming infinity and a problem
-			info(cumulativeProb) //Gets to 0 since total goes to infinity
+		if (chosenRoad === null) {
+			info(totalWeights) // Gets big too soon, becoming infinity and a problem
+			info(cumulativeProb) // Gets to 0 since total goes to infinity
 			info("Was unable to pick a road, picking a random road instead.")
 			chosenRoad = availableRoads.get(new Random().nextInt(availableRoads.size()));
 		}
@@ -143,17 +138,13 @@ agent TravelerAgent {
 
 	// Assuming all cities are interconnected, we can remove roads linking to previously visited cities
 	// Unless the previously visited city is the depot
-	def removeRoadsToPreviouslyVisitedCities(roads : List<Road>) : void
-	{
+	def removeRoadsToPreviouslyVisitedCities(roads : List<Road>) : void {
 		var i : int = 0;
-		while(i<roads.size())
-		{
-			if (roads.get(i).travel(currentCity) !== startingCity && visitedCities.contains(roads.get(i).travel(currentCity)))
-			{
+		while (i < roads.size()) {
+			if (roads.get(i).travel(currentCity) !== startingCity &&
+				visitedCities.contains(roads.get(i).travel(currentCity))) {
 				roads.remove(roads.get(i))
-			}
-			else
-			{
+			} else {
 				i++
 			}
 		}

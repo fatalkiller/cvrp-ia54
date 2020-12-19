@@ -8,7 +8,6 @@ import javafx.application.Application
 class MyAppLauncher {
 	
 	static def main(args : String*) {
-		// Application::launch(typeof(MyAppFxApplication))
 		Application::launch(typeof(StartWindow))
 	}
 }

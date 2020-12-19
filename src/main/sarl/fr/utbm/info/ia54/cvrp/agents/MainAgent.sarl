@@ -109,8 +109,7 @@ agent MainAgent {
 		met.decreaseActiveAgents();
 		var pathTaken : List<Road> = occurrence.pathTaken;
 		var timeTaken : Float = occurrence.timeTaken;
-
-		if (met.fastestTime.equals("TBD") || timeTaken < met.fastestTime.longValue) {
+		if (met.fastestTime.equals("TBD") || timeTaken < met.fastestTime.floatValue) {
 			if (isDebugMode) {
 				info("new record!")
 			}
@@ -121,7 +120,6 @@ agent MainAgent {
 		}
 
 		for (road : pathTaken) {
-			// TODO : make futureweight an atomic type cus chances are, this is gonna get concurrent access
 			road.increaseFutureWeight(timeTaken);
 		}
 

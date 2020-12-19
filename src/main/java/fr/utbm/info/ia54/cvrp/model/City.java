@@ -14,8 +14,8 @@ public class City {
 	private String name;
 
 	// Where the city will appear on the map
-	private Double x;
-	private Double y;
+	private Float x;
+	private Float y;
 
 	// How much does the city cost to deliver ?
 	// Positive value counts as a refill station
@@ -64,7 +64,7 @@ public class City {
 		this.capacity = new Long(0);
 	}
 
-	public City(UUID uuid, String name, Double x, Double y, Long capacity) {
+	public City(UUID uuid, String name, Float x, Float y, Long capacity) {
 		super();
 		this.uuid = uuid;
 		this.name = name;
@@ -89,19 +89,19 @@ public class City {
 		this.name = name;
 	}
 
-	public Double getX() {
+	public Float getX() {
 		return x;
 	}
 
-	public void setX(Double x) {
+	public void setX(Float x) {
 		this.x = x;
 	}
 
-	public Double getY() {
+	public Float getY() {
 		return y;
 	}
 
-	public void setY(Double y) {
+	public void setY(Float y) {
 		this.y = y;
 	}
 
