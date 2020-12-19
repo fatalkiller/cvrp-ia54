@@ -151,6 +151,7 @@ public class StartWindow extends Application {
 		for (RadioButton button : otherButtons)
 			layout.getChildren().add(button);
 
+		//TODO : Fuck around with constants
 		Text infoDisplay1 = new Text("Number of CVRP agents to run simultaneously (Integer) :");
 		layout.getChildren().add(infoDisplay1);
 		

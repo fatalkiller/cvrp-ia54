@@ -123,10 +123,6 @@ public class Road {
 		this.city1 = null;
 		this.city2 = null;
 		this.timeTaken = new Float(0);
-		// TODO : doesnt seem like having 0 weight works (division by 0 etc issues) so
-		// Im starting with 1 on weights
-		// I dont think this should cause any issues but Im marking this with a todo
-		// just in case.
 		this.weight = new Float(1);
 		this.futureWeight = new AtomicFloat(1);
 	}

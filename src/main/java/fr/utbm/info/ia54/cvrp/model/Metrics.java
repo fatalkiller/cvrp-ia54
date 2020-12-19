@@ -64,6 +64,8 @@ public class Metrics {
 		this.roundsElapsed.incrementAndGet();
 	}
 
+	//TODO : Find out why the text display is bugged (assuming its indeed just the display).
+	//It probably has to do with fastestPathObj being stored wrong idk
 	public void setFormattedFastestPath(List<Road> pathTaken) {
 		this.fastestPathObj = pathTaken;
 		String fastestPathString = "\n";

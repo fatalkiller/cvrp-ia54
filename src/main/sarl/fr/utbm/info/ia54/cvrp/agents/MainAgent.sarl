@@ -113,6 +113,9 @@ agent MainAgent {
 			if (isDebugMode) {
 				info("new record!")
 			}
+			
+			//TODO : Make these two also atomic because fuck synchronize
+			//Also possibly the source of the current bug
 			synchronized (met) 
 			{
 				met.fastestTime = timeTaken.toString();

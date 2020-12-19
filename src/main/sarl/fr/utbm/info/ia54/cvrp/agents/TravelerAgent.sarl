@@ -110,10 +110,10 @@ agent TravelerAgent {
 		availableRoads = env.getAdjacentRoads(currentCity);
 		removeRoadsToPreviouslyVisitedCities(availableRoads);
 		
-		//TODO find better condition
+		//TODO : find better depot return condition for optimization
 		if(charge<maxCharge/5)
 		{
-			//We send it back to the depot if chage is low, which should be the first available road
+			//We send it back to the depot if charge is low, which should be the first available road
 			chosenRoad=availableRoads.get(0);
 		}
 
@@ -121,10 +121,6 @@ agent TravelerAgent {
 			totalWeights += new Float(Math.pow(road.weight, pheromoneInfluence) * Math.pow(1 / road.timeTaken, distanceInfluence));
 		}
 
-		// TODO : cumulativeProb turns into NaN after a few rounds, investigate why
-		// Update : looks like its because totalWeights quickly turns into INFINITY
-		// Update : after round 0, cumulativeProb = 0, totalWeights = infinity
-		// Maybe I need to tweak the constants ?
 		for (road : availableRoads) {
 			if (chosenRoad === null) {
 				cumulativeProb += new Float(Math.pow(road.weight, pheromoneInfluence) * Math.pow(1 / road.timeTaken, distanceInfluence) /
