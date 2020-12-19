@@ -251,9 +251,11 @@ public class Environment {
 
 	public void updateWeights() {
 		for (Road road : roads) {
+
 			road.setWeight(
 					((1 - evaporationProportion) * road.getWeight()) + (evaporationConstant / road.getFutureWeight()));
-			road.setFutureWeight(new Float(0));
+			
+			road.setFutureWeight(new Float(1));
 		}
 	}
 

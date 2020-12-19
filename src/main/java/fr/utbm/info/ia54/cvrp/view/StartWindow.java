@@ -156,7 +156,7 @@ public class StartWindow extends Application {
 		
 		simultaneousAgentsField = new TextField();
 		simultaneousAgentsField.setMaxSize(100, 50);
-		simultaneousAgentsField.setText("20");
+		simultaneousAgentsField.setText("50");
 		layout.getChildren().add(simultaneousAgentsField);
 
 		Text infoDisplay2 = new Text("Evaporation proportion (0-1) :");
@@ -164,15 +164,15 @@ public class StartWindow extends Application {
 		
 		evaporationProportionField = new TextField();
 		evaporationProportionField.setMaxSize(100, 50);
-		evaporationProportionField.setText("0.5");
+		evaporationProportionField.setText("0.8");
 		layout.getChildren().add(evaporationProportionField);
 
-		Text infoDisplay3 = new Text("Pheromone Constant (Real Positive) :");
+		Text infoDisplay3 = new Text("Evaporation Constant (Real Positive) :");
 		layout.getChildren().add(infoDisplay3);
 		
 		evaporationConstantField = new TextField();
 		evaporationConstantField.setMaxSize(100, 50);
-		evaporationConstantField.setText("10");
+		evaporationConstantField.setText("160");
 		layout.getChildren().add(evaporationConstantField);
 
 		Text infoDisplay4 = new Text("pheromone influence (Real Positive) :");
@@ -180,7 +180,7 @@ public class StartWindow extends Application {
 		
 		pheromoneInfluenceField = new TextField();
 		pheromoneInfluenceField.setMaxSize(100, 50);
-		pheromoneInfluenceField.setText("0.8");
+		pheromoneInfluenceField.setText("2");
 		layout.getChildren().add(pheromoneInfluenceField);
 
 		Text infoDisplay5 = new Text("distance influence (Real Positive) :");
@@ -188,7 +188,7 @@ public class StartWindow extends Application {
 		
 		distanceInfluenceField = new TextField();
 		distanceInfluenceField.setMaxSize(100, 50);
-		distanceInfluenceField.setText("1.2");
+		distanceInfluenceField.setText("5");
 		layout.getChildren().add(distanceInfluenceField);
 
 		layout.getChildren().add(debugModeCheckBox);

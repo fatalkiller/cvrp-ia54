@@ -121,7 +121,7 @@ public class Road {
 		//TODO : doesnt seem like having 0 weight works (division by 0 etc issues) so Im starting with 1 on weights
 		//I dont think this should cause any issues but Im marking this with a todo just in case.
 		this.weight = new Float(1);
-		this.futureWeight = new Float(0);
+		this.futureWeight = new Float(1);
 	}
 
 	public Road(City city1, City city2, Float timeTaken, Float weight, Float futureWeight) {

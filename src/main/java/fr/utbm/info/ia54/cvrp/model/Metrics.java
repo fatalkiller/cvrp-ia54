@@ -75,6 +75,9 @@ public class Metrics {
 		// the same road twice in a row
 		// Since only the fastest of times get processed here, this is a fair assumption
 		// Altho it might cause some problems on some maps
+		
+		
+		
 		if (pathTaken.get(1).getCities().contains(pathTaken.get(0).getCity1())) {
 			currentCity = pathTaken.get(0).getCity2();
 		} else {

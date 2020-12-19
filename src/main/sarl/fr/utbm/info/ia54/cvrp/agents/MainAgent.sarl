@@ -110,11 +110,14 @@ agent MainAgent {
 		var pathTaken : List<Road> = occurrence.pathTaken;
 		var timeTaken : Float = occurrence.timeTaken;
 
-		if (met.fastestTime.equals("TBD") || timeTaken < met.fastestTime.longValue) {
-			if (isDebugMode) {
+		if (met.fastestTime.equals("TBD") || timeTaken < met.fastestTime.longValue) 
+		{
+			if (isDebugMode) 
+			{
 				info("new record!")
 			}
-			synchronized (met) {
+			synchronized (met) 
+			{
 				met.fastestTime = timeTaken.toString();
 				met.formattedFastestPath = pathTaken;
 			}

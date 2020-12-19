@@ -89,6 +89,8 @@ agent TravelerAgent {
 
 			// change location
 			currentCity = road.travel(currentCity);
+			info("test1 "+this.charge)
+			//info("test2 "+this.visitedCities.size())
 		}
 		emit(new TravelsFinished(travelledRoads, travelTime))
 		killMe;
@@ -106,7 +108,13 @@ agent TravelerAgent {
 
 		availableRoads = env.getAdjacentRoads(currentCity);
 		removeRoadsToPreviouslyVisitedCities(availableRoads);
-		Road.sortRoadsByWeights(availableRoads, pheromoneInfluence, distanceInfluence);
+		
+		//TODO find better condition
+		if(charge<maxCharge/5)
+		{
+			//We send it back to the depot if chage is low, which should be the first available road
+			chosenRoad=availableRoads.get(0);
+		}
 
 		for(road : availableRoads)
 		{
@@ -129,12 +137,14 @@ agent TravelerAgent {
 				}
 			}
 		}
+
 		
 		// To correct issues when I was unable to pick a road, just pick a random one
 		if (chosenRoad === null) 
 		{
-			info(totalWeights) //Gets big too soon, becoming infinity and a problem
-			info(cumulativeProb) //Gets to 0 since total goes to infinity
+			info(totalWeights)
+			info(cumulativeProb)
+			
 			info("Was unable to pick a road, picking a random road instead.")
 			chosenRoad = availableRoads.get(new Random().nextInt(availableRoads.size()));
 		}
