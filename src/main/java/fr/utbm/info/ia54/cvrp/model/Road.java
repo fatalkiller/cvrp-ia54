@@ -124,7 +124,7 @@ public class Road {
 		this.city2 = null;
 		this.timeTaken = new Float(0);
 		this.weight = new Float(1);
-		this.futureWeight = new AtomicFloat(1);
+		this.futureWeight = new AtomicFloat(0);
 	}
 
 	public Road(City city1, City city2, Float timeTaken, Float weight, Float futureWeight) {

@@ -19,6 +19,7 @@ public class Metrics {
 	private String fastestTime;
 	private String fastestPath;
 	private List<Road> fastestPathObj; // Use this to know which path to highlight
+	private Environment env; //Actually having a reference to environment might be handy
 	private AtomicInteger roundsElapsed = new AtomicInteger();
 	private AtomicInteger totalCities = new AtomicInteger();
 	private AtomicInteger activeAgents = new AtomicInteger();
@@ -34,6 +35,7 @@ public class Metrics {
 		fastestTime = "TBD";
 		fastestPath = "TBD";
 		fastestPathObj = new ArrayList<Road>();
+		this.env = env;
 		roundsElapsed.set(0);
 		if(type.equals("TSP"))
 		{
@@ -64,8 +66,6 @@ public class Metrics {
 		this.roundsElapsed.incrementAndGet();
 	}
 
-	//TODO : Find out why the text display is bugged (assuming its indeed just the display).
-	//It probably has to do with fastestPathObj being stored wrong idk
 	public void setFormattedFastestPath(List<Road> pathTaken) {
 		this.fastestPathObj = pathTaken;
 		String fastestPathString = "\n";
@@ -73,23 +73,29 @@ public class Metrics {
 		Long capacity = new Long(0);
 		Long maxCapacity;
 
-		// Determining the first city making the assumption that the agent didnt take
-		// the same road twice in a row
-		// Since only the fastest of times get processed here, this is a fair assumption
-		// Altho it might cause some problems on some maps
-		
-		
-		
-		if (pathTaken.get(1).getCities().contains(pathTaken.get(0).getCity1())) {
-			currentCity = pathTaken.get(0).getCity2();
-		} else {
-			currentCity = pathTaken.get(0).getCity1();
+		if(this.type.equals("CVRP"))
+		{
+			currentCity=env.getCityByName("City 1");
+		}
+		else
+		{
+			// Determining the first city making the assumption that the agent didnt take
+			// the same road twice in a row
+			// Since only the fastest of times get processed here, this is a fair assumption
+			// Altho it might cause some problems on some maps
+			//If type is cvrp we can just assume it's city 1 however
+			
+			if (pathTaken.get(1).getCities().contains(pathTaken.get(0).getCity1())) {
+				currentCity = pathTaken.get(0).getCity2();
+			} else {
+				currentCity = pathTaken.get(0).getCity1();
+			}
 		}
 		
 		maxCapacity = currentCity.getCapacity();
 		
 		if (capacity + currentCity.getCapacity() >= 0) {
-			capacity = Math.min(capacity + currentCity.getCapacity(), maxCapacity);			
+			capacity = Math.min(capacity + currentCity.getCapacity(), maxCapacity);	
 		}
 		
 		fastestPathString += currentCity.getName() + " ; Charge : " + capacity;

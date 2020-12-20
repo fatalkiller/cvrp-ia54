@@ -107,6 +107,8 @@ agent TravelerAgent {
 
 		availableRoads = env.getAdjacentRoads(currentCity);
 		removeRoadsToPreviouslyVisitedCitiesAndCitiesWeCantDeliver(availableRoads);
+		//TODO : similarly to how we made it more likely to go back to base at low capacity, 
+		//we should make it more likely to explore at high capacity to prevent backs and forth close to the start ?
 
 		for (road : availableRoads) {
 			totalWeights += new Float(Math.pow(road.weight, pheromoneInfluence) * Math.pow(1 / road.timeTaken, distanceInfluence));

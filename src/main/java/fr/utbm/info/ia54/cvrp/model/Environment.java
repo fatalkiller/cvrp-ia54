@@ -252,10 +252,21 @@ public class Environment {
 	public void updateWeights() {
 		for (Road road : roads) {
 
-			road.setWeight(
-					((1 - evaporationProportion) * road.getWeight()) + (evaporationConstant / road.getFutureWeight()));
+			//Only include the future weight if this road was actually visited.
+			//This prevents the division by 0 into infinity issue
+			//According to the wiki we should still evaporate, though
+			//This is a huge improvement as not having to set futureweight to 1 allows for proportional control of the weights
+			//I think having regular weights set to 1 should still be fine as its only a starting variable and doesnt recur
+			if(road.getFutureWeight()!=0)
+			{
+				road.setWeight(((1 - evaporationProportion) * road.getWeight()) + (evaporationConstant / road.getFutureWeight()));
+			}
+			else
+			{
+				road.setWeight((1 - evaporationProportion) * road.getWeight());
+			}
 			
-			road.setFutureWeight(new Float(1));
+			road.setFutureWeight(new Float(0));
 		}
 	}
 

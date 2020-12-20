@@ -1,28 +1,14 @@
 package fr.utbm.info.ia54.cvrp.view;
 
+import fr.utbm.info.ia54.cvrp.model.Environment;
+import fr.utbm.info.ia54.cvrp.model.Metrics;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.scene.Scene;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.ScatterChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Screen;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import fr.utbm.info.ia54.cvrp.model.City;
-import fr.utbm.info.ia54.cvrp.model.Environment;
-import fr.utbm.info.ia54.cvrp.model.Metrics;
-import fr.utbm.info.ia54.cvrp.model.Road;
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 
 public class Display {
 
