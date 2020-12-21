@@ -20,75 +20,105 @@ public class Environment {
 	
 	private String benchType;
 	private String benchName;
-	// TODO : Add bench result files
-	// TODO : Add bench cost from bench result files
-	// private String benchBestCost;
+	private String benchBestCost;
 
 	public Environment(String type, String map) {
 		this.benchType = type;
 		this.benchName = map;
+		this.benchBestCost = " - ";
 		cities = new ArrayList<City>();
 		roads = new ArrayList<Road>();
 		if (this.benchName.equals("Default Map")) {
 			makeDefaultMap();
 		} else {
-			final boolean isCVRP = this.benchType.equals("CVRP");
-			File mapFile = new File(
-					"src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/" + benchName + (isCVRP ? ".vrp" : ".tsp"));
-			Scanner scanner = null;
-			String line = null;
-			String data[] = null;
-			boolean isDemandSection = false;
-			boolean isDepotSection = false;
-			Long capacity = new Long(0);
-			Float maxX = new Float(0);
-			Float maxY = new Float(0);
-			City city;
-			try {
-				scanner = new Scanner(mapFile);
-			} catch (FileNotFoundException e) {
-				System.out.println("Error reading map file.");
+			loadBenchmarkFile();
+			
+			if (this.benchType.equals("CVRP")) {
+				loadBenchmarkSolBestCost();
 			}
-			while (scanner.hasNextLine()) {
-				line = scanner.nextLine();
-				if (line != null && !line.isEmpty()) {
-					data = line.split(" ");
-					if (isCVRP) {
-						if (data.length == 3 && data[0].equals("CAPACITY")) {
-							capacity = new Long(data[2]);
-						}
-						if (line.equals("DEMAND_SECTION")) {
-							isDemandSection = true;
-						}
-
-						if (line.equals("DEPOT_SECTION")) {
-							isDepotSection = true;
-						}
+		}
+	}
+	
+	private void loadBenchmarkFile() {
+		final boolean isCVRP = this.benchType.equals("CVRP");
+		File mapFile = new File(
+				"src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/" + benchName + (isCVRP ? ".vrp" : ".tsp"));
+		Scanner scanner = null;
+		String line = null;
+		String data[] = null;
+		boolean isDemandSection = false;
+		boolean isDepotSection = false;
+		Long capacity = new Long(0);
+		Float maxX = new Float(0);
+		Float maxY = new Float(0);
+		City city;
+		try {
+			scanner = new Scanner(mapFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("Error reading map file.");
+		}
+		while (scanner.hasNextLine()) {
+			line = scanner.nextLine();
+			if (line != null && !line.isEmpty()) {
+				data = line.split(" ");
+				if (isCVRP) {
+					if (data.length == 3 && data[0].equals("CAPACITY")) {
+						capacity = new Long(data[2]);
+					}
+					if (line.equals("DEMAND_SECTION")) {
+						isDemandSection = true;
 					}
 
-					if (Character.isDigit(line.charAt(0))) {
-						if (!isDemandSection) {
-							// Import city information
-							city = new City();
-							city.setName("City " + data[0]);
-							city.setX(Float.parseFloat(data[1]));
-							city.setY(Float.parseFloat(data[2]));
-							cities.add(city);
-
-							maxX = Math.max(Float.parseFloat(data[1]), maxX);
-							maxY = Math.max(Float.parseFloat(data[2]), maxY);
-
-						} else {
-							// Import capacity information
-							city = cities.get(Integer.parseInt(data[0]) - 1);
-							city.setCapacity(isDepotSection ? capacity : new Long("-" + data[1]));
-						}
+					if (line.equals("DEPOT_SECTION")) {
+						isDepotSection = true;
 					}
 				}
 
+				if (Character.isDigit(line.charAt(0))) {
+					if (!isDemandSection) {
+						// Import city information
+						city = new City();
+						city.setName("City " + data[0]);
+						city.setX(Float.parseFloat(data[1]));
+						city.setY(Float.parseFloat(data[2]));
+						cities.add(city);
+
+						maxX = Math.max(Float.parseFloat(data[1]), maxX);
+						maxY = Math.max(Float.parseFloat(data[2]), maxY);
+
+					} else {
+						// Import capacity information
+						city = cities.get(Integer.parseInt(data[0]) - 1);
+						city.setCapacity(isDepotSection ? capacity : new Long("-" + data[1]));
+					}
+				}
 			}
-			autoGenerateRoads();
-			resizeMap(maxX, maxY);
+
+		}
+		autoGenerateRoads();
+		resizeMap(maxX, maxY);
+	}
+	
+	private void loadBenchmarkSolBestCost() {
+		File mapSolFile = new File(
+				"src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/" + benchName + ".sol");
+		Scanner scanner = null;
+		String line = null;
+		String data[] = null;
+		try {
+			scanner = new Scanner(mapSolFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("Error reading map file.");
+		}
+		
+		while (scanner.hasNextLine()) {
+			line = scanner.nextLine();
+			if (line != null && !line.isEmpty()) {
+				data = line.split(" ");
+				if (data[0].equals("Cost")) {
+					this.benchBestCost = data[1];
+				}
+			}
 		}
 	}
 
@@ -340,5 +370,9 @@ public class Environment {
 
 	public String getBenchName() {
 		return benchName;
+	}
+
+	public String getBenchBestCost() {
+		return benchBestCost;
 	}
 }

@@ -272,8 +272,9 @@ public class SimulationWindow {
 
 				Label lbBenchName = new Label("Benchmark name: " + environment.getBenchName());
 				Label lbBenchType = new Label("Benchmark name: " + environment.getBenchType());
+				Label lbBenchBestCost = new Label("Benchmark best cost: " + environment.getBenchBestCost());
 
-				vboxInfoBench.getChildren().addAll(lbBenchType, lbBenchName);
+				vboxInfoBench.getChildren().addAll(lbBenchType, lbBenchName, lbBenchBestCost);
 
 				// Also display some metrics & stats
 				vboxmetrics = new VBox();
