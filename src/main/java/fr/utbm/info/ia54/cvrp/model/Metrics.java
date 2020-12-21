@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.paint.Color;
@@ -16,15 +17,15 @@ public class Metrics {
 
 	private String type;
 	private Calendar startTime;
-	private String fastestTime;
-	private String fastestPath;
+	private AtomicReference<String> fastestTime;
+	private AtomicReference<String> fastestPath;
 	private List<Road> fastestPathObj; // Use this to know which path to highlight
 	private Environment env; //Actually having a reference to environment might be handy
 	private AtomicInteger roundsElapsed = new AtomicInteger();
 	private AtomicInteger totalCities = new AtomicInteger();
 	private AtomicInteger activeAgents = new AtomicInteger();
 
-	public Metrics(String type, Environment env, Integer simultaneousAgents) {
+	public Metrics(String type, Environment env) {
 		this.type = type;
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 		display = new Text();
@@ -32,8 +33,8 @@ public class Metrics {
 		display.setY(25);
 
 		startTime = Calendar.getInstance();
-		fastestTime = "TBD";
-		fastestPath = "TBD";
+		fastestPath = new AtomicReference<>("TBD");
+		fastestTime = new AtomicReference<>("TBD");
 		fastestPathObj = new ArrayList<Road>();
 		this.env = env;
 		roundsElapsed.set(0);
@@ -43,7 +44,7 @@ public class Metrics {
 		}
 		else if(type.equals("CVRP"))
 		{
-			totalCities.set(simultaneousAgents);
+			totalCities.set(SimuParameters.agentNumber);
 		}
 		activeAgents.set(0);
 	}
@@ -111,7 +112,7 @@ public class Metrics {
 			}
 			fastestPathString += "\n-> " + currentCity.getName() + " ; Charge : " + capacity;
 		}
-		this.fastestPath = fastestPathString;
+		this.fastestPath.set(fastestPathString);
 	}
 
 	public List<Line> getFastestRoadsRepresentation() {
@@ -213,19 +214,19 @@ public class Metrics {
 	}
 
 	public String getFastestTime() {
-		return fastestTime;
+		return fastestTime.get();
 	}
 
 	public void setFastestTime(String fastestTime) {
-		this.fastestTime = fastestTime;
+		this.fastestTime.set(fastestTime);
 	}
 
 	public String getFastestPath() {
-		return fastestPath;
+		return fastestPath.get();
 	}
 
 	public void setFastestPath(String fastestPath) {
-		this.fastestPath = fastestPath;
+		this.fastestPath.set(fastestPath);
 	}
 
 	public List<Road> getFastestPathObj() {

@@ -1,6 +1,5 @@
 package fr.utbm.info.ia54.cvrp.agents
 
-import fr.utbm.info.ia54.cvrp.view.Display
 import io.sarl.core.AgentTask
 import io.sarl.core.Destroy
 import io.sarl.core.Initialize
@@ -11,27 +10,21 @@ import java.util.List
 import fr.utbm.info.ia54.cvrp.model.Environment
 import fr.utbm.info.ia54.cvrp.model.Metrics
 import fr.utbm.info.ia54.cvrp.model.Road
+import fr.utbm.info.ia54.cvrp.view.SimulationWindow
+import fr.utbm.info.ia54.cvrp.model.SimuParameters
 
 // Don't write over occurrences
 // Handle synchronization issues with synchronized() when needed
 @SuppressWarnings("discouraged_occurrence_readonly_use", "potential_field_synchronization_problem")
 agent MainAgent {
-	
+
 	var env : Environment; // Stores the position of the objects in the simulation
-	var disp : Display; // Handles the view
+	var disp : SimulationWindow; // Handles the view
 	var met : Metrics; // Stores information on the simulation
-	
 	// Launching options
 	var type : String
 	var map : String
 	var isDebugMode : Boolean
-	
-	// constants
-	var simultaneousAgents : Integer
-	var evaporationProportion : Float
-	var evaporationConstant : Float
-	var pheromoneInfluence : Float
-	var distanceInfluence : Float
 
 	uses Logging, Lifecycle, Schedules
 
@@ -43,31 +36,10 @@ agent MainAgent {
 		// Retrieve passed parameters like so
 		type = occurrence.parameters.get(0) as String;
 		map = occurrence.parameters.get(1) as String;
-		simultaneousAgents = occurrence.parameters.get(2) as Integer;
-		evaporationProportion = occurrence.parameters.get(3) as Float;
-		evaporationConstant = occurrence.parameters.get(4) as Float;
-		pheromoneInfluence = occurrence.parameters.get(5) as Float;
-		distanceInfluence = occurrence.parameters.get(6) as Float;
-		isDebugMode = occurrence.parameters.get(7) as Boolean;
-		info(type)
-		info(map)
-		info(isDebugMode)
-
-		env = new Environment(type, map, evaporationProportion, evaporationConstant);
-		met = new Metrics(type, env, simultaneousAgents);
-
-		info("Environment initialized.");
-
-		disp = new Display(env, met, isDebugMode);
-
-		// Find a way to transfer the stage from StartWindow to here
-		info("Display initialized.");
-
-		disp.changeDisplayFrameTitle("Ant colony");
-
-		// Display simulation frame
-		info("Displaying...");
-		disp.displaySimulationFrame();
+		isDebugMode = occurrence.parameters.get(2) as Boolean;
+		env = occurrence.parameters.get(3) as Environment;
+		met = occurrence.parameters.get(4) as Metrics;
+		disp = occurrence.parameters.get(5) as SimulationWindow;
 
 		// I guess we just want the visuals to update and we want the agents to update ASAP and not wait for next frame
 		// So Im making 2 loops, altho agents arent as much a loop as they are a nonstop exchange
@@ -96,10 +68,9 @@ agent MainAgent {
 		}
 		if (type.equals("CVRP")) {
 			var i : Integer;
-			for(i=0;i<simultaneousAgents;i++)
-			{
+			for (i = 0; i < SimuParameters.agentNumber; i++) {
 				met.increaseActiveAgents();
-				spawn(TravelerAgent, env, met, env.getCities().get(0), type, pheromoneInfluence, distanceInfluence, isDebugMode);
+				spawn(TravelerAgent, env, met, env.getCities().get(0), type, isDebugMode);
 			}
 		}
 	}
@@ -113,14 +84,9 @@ agent MainAgent {
 			if (isDebugMode) {
 				info("new record!")
 			}
-			
-			//TODO : Make these two also atomic because fuck synchronize
-			//Also possibly the source of the current bug
-			synchronized (met) 
-			{
-				met.fastestTime = timeTaken.toString();
-				met.formattedFastestPath = pathTaken;
-			}
+
+			met.fastestTime = timeTaken.toString();
+			met.formattedFastestPath = pathTaken;
 		}
 
 		for (road : pathTaken) {

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import fr.utbm.info.ia54.cvrp.agents.DeathAgent;
 import fr.utbm.info.ia54.cvrp.agents.MainAgent;
+import fr.utbm.info.ia54.cvrp.model.SimuParameters;
 import io.sarl.bootstrap.SRE;
 import io.sarl.bootstrap.SREBootstrap;
 import javafx.application.Application;
@@ -33,22 +34,14 @@ public class StartWindow extends Application {
 	private CheckBox debugModeCheckBox;
 	private ToggleGroup mapGroup;
 	private ToggleGroup typeGroup;
-	
-	
-	//Constants to change around
-	private TextField simultaneousAgentsField;
-	private TextField evaporationProportionField;
-	private TextField evaporationConstantField;
-	private TextField pheromoneInfluenceField;
-	private TextField distanceInfluenceField;
 
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
 
-	public static void spawnMainAgent(String type, String map, Integer simultaneousAgents, Float evaporationProportion, Float evaporationConstant, Float pheromoneInfluence, Float distanceInfluence, boolean isDebugMode) throws Exception {
+	public static void spawnMainAgent(String type, String map, boolean isDebugMode) throws Exception {
 		SREBootstrap bootstrap = SRE.getBootstrap();
-		bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, simultaneousAgents, evaporationProportion, evaporationConstant, pheromoneInfluence, distanceInfluence, isDebugMode);
+		bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), type, map, isDebugMode);
 	}
 
 	@Override
@@ -59,23 +52,16 @@ public class StartWindow extends Application {
 		layout = new VBox();
 		layout.setSpacing(5);
 
-		startButton = new Button("Start Colony");
+		startButton = new Button("Go to simulation");
 
 		startButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				try {
-
 					String type = typeGroup.getSelectedToggle().getUserData().toString();
 					String map = mapGroup.getSelectedToggle().getUserData().toString();
-					Integer simultaneousAgents = Integer.parseInt(simultaneousAgentsField.getText());
-					Float evaporationProportion = Float.parseFloat(evaporationProportionField.getText());
-					Float evaporationConstant = Float.parseFloat(evaporationConstantField.getText());
-					Float pheromoneInfluence = Float.parseFloat(pheromoneInfluenceField.getText());
-					Float distanceInfluence = Float.parseFloat(distanceInfluenceField.getText());
 					boolean isDebugMode = debugModeCheckBox.isSelected();
-					// Pass stuff here as well
-					StartWindow.spawnMainAgent(type, map, simultaneousAgents, evaporationProportion, evaporationConstant, pheromoneInfluence, distanceInfluence, isDebugMode);
+					new SimulationWindow(type, map, isDebugMode);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -127,7 +113,7 @@ public class StartWindow extends Application {
 
 		RadioButton CVRPBenchmarki;
 		List<RadioButton> otherButtons = new ArrayList<RadioButton>();
-		
+
 		for (int i = 2; i < 15; i++) {
 			CVRPBenchmarki = new RadioButton("CMT" + i);
 			CVRPBenchmarki.setUserData("CMT" + i);
@@ -147,50 +133,9 @@ public class StartWindow extends Application {
 		layout.getChildren().add(randomCities);
 		layout.getChildren().add(usCities);
 		layout.getChildren().add(CVRPBenchmark1);
-		
+
 		for (RadioButton button : otherButtons)
 			layout.getChildren().add(button);
-
-		//TODO : Fuck around with constants
-		Text infoDisplay1 = new Text("Number of CVRP agents to run simultaneously (Integer) :");
-		layout.getChildren().add(infoDisplay1);
-		
-		simultaneousAgentsField = new TextField();
-		simultaneousAgentsField.setMaxSize(100, 50);
-		simultaneousAgentsField.setText("50");
-		layout.getChildren().add(simultaneousAgentsField);
-
-		Text infoDisplay2 = new Text("Evaporation proportion (0-1) :");
-		layout.getChildren().add(infoDisplay2);
-		
-		evaporationProportionField = new TextField();
-		evaporationProportionField.setMaxSize(100, 50);
-		evaporationProportionField.setText("0.8");
-		layout.getChildren().add(evaporationProportionField);
-
-		Text infoDisplay3 = new Text("Evaporation Constant (Real Positive) :");
-		layout.getChildren().add(infoDisplay3);
-		
-		evaporationConstantField = new TextField();
-		evaporationConstantField.setMaxSize(100, 50);
-		evaporationConstantField.setText("160");
-		layout.getChildren().add(evaporationConstantField);
-
-		Text infoDisplay4 = new Text("pheromone influence (Real Positive) :");
-		layout.getChildren().add(infoDisplay4);
-		
-		pheromoneInfluenceField = new TextField();
-		pheromoneInfluenceField.setMaxSize(100, 50);
-		pheromoneInfluenceField.setText("2");
-		layout.getChildren().add(pheromoneInfluenceField);
-
-		Text infoDisplay5 = new Text("distance influence (Real Positive) :");
-		layout.getChildren().add(infoDisplay5);
-		
-		distanceInfluenceField = new TextField();
-		distanceInfluenceField.setMaxSize(100, 50);
-		distanceInfluenceField.setText("5");
-		layout.getChildren().add(distanceInfluenceField);
 
 		layout.getChildren().add(debugModeCheckBox);
 		layout.getChildren().add(startButton);
@@ -204,8 +149,6 @@ public class StartWindow extends Application {
 			usCities.setVisible(true);
 
 			CVRPBenchmark1.setVisible(false);
-			infoDisplay1.setVisible(false);
-			simultaneousAgentsField.setVisible(false);
 			for (RadioButton button : otherButtons)
 				button.setVisible(false);
 		});
@@ -213,8 +156,6 @@ public class StartWindow extends Application {
 		CVRPButton.setOnAction(__ -> {
 			CVRPBenchmark1.setVisible(true);
 			CVRPBenchmark1.setSelected(true);
-			infoDisplay1.setVisible(true);
-			simultaneousAgentsField.setVisible(true);
 			for (RadioButton button : otherButtons)
 				button.setVisible(true);
 
@@ -223,9 +164,8 @@ public class StartWindow extends Application {
 			randomCities.setVisible(false);
 			usCities.setVisible(false);
 		});
-		
 
-		s = new Scene(layout, 600, 900);
+		s = new Scene(layout, 400, 600);
 		primaryStage.setScene(s);
 		primaryStage.show();
 	}

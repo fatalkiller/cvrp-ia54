@@ -17,20 +17,24 @@ public class Environment {
 
 	public List<City> cities;
 	public List<Road> roads;
-	private Float evaporationProportion;
-	private Float evaporationConstant;
+	
+	private String benchType;
+	private String benchName;
+	// TODO : Add bench result files
+	// TODO : Add bench cost from bench result files
+	// private String benchBestCost;
 
-	public Environment(String type, String map, Float evaporationProportion, Float evaporationConstant) {
+	public Environment(String type, String map) {
+		this.benchType = type;
+		this.benchName = map;
 		cities = new ArrayList<City>();
 		roads = new ArrayList<Road>();
-		this.evaporationProportion = evaporationProportion;
-		this.evaporationConstant = evaporationConstant;
-		if (map.equals("Default Map")) {
+		if (this.benchName.equals("Default Map")) {
 			makeDefaultMap();
 		} else {
-			final boolean isCVRP = type.equals("CVRP");
+			final boolean isCVRP = this.benchType.equals("CVRP");
 			File mapFile = new File(
-					"src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/" + map + (isCVRP ? ".vrp" : ".tsp"));
+					"src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/" + benchName + (isCVRP ? ".vrp" : ".tsp"));
 			Scanner scanner = null;
 			String line = null;
 			String data[] = null;
@@ -259,11 +263,11 @@ public class Environment {
 			//I think having regular weights set to 1 should still be fine as its only a starting variable and doesnt recur
 			if(road.getFutureWeight()!=0)
 			{
-				road.setWeight(((1 - evaporationProportion) * road.getWeight()) + (evaporationConstant / road.getFutureWeight()));
+				road.setWeight(((1 - SimuParameters.evaporationProportion) * road.getWeight()) + (SimuParameters.evaporationConstant / road.getFutureWeight()));
 			}
 			else
 			{
-				road.setWeight((1 - evaporationProportion) * road.getWeight());
+				road.setWeight((1 - SimuParameters.evaporationProportion) * road.getWeight());
 			}
 			
 			road.setFutureWeight(new Float(0));
@@ -328,5 +332,13 @@ public class Environment {
 
 	public void setRoads(List<Road> roads) {
 		this.roads = roads;
+	}
+
+	public String getBenchType() {
+		return benchType;
+	}
+
+	public String getBenchName() {
+		return benchName;
 	}
 }
