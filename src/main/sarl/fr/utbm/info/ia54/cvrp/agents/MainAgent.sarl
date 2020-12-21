@@ -23,6 +23,7 @@ agent MainAgent {
 	var met : Metrics; // Stores information on the simulation
 	// Launching options
 	var type : String
+	//TODO : review initialization since it changed enough to make a main variable obsolete
 	var map : String
 	var isDebugMode : Boolean
 
@@ -86,6 +87,7 @@ agent MainAgent {
 			}
 
 			met.fastestTime = timeTaken.toString();
+			//TODO : Make metrics.fastestPathObj an atomic
 			met.formattedFastestPath = pathTaken;
 		}
 

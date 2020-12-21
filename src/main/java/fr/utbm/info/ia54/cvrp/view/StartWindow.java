@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import fr.utbm.info.ia54.cvrp.agents.DeathAgent;
 import fr.utbm.info.ia54.cvrp.agents.MainAgent;
-import fr.utbm.info.ia54.cvrp.model.SimuParameters;
 import io.sarl.bootstrap.SRE;
 import io.sarl.bootstrap.SREBootstrap;
 import javafx.application.Application;
@@ -17,14 +16,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class StartWindow extends Application {
-
+//TODO : I have no idea where the application constants were moved, but we should still continue to improve them to find better default values
 	static private Stage stage;
 
 	// Items to put on the screen
