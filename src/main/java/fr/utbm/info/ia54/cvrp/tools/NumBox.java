@@ -91,7 +91,6 @@ public class NumBox extends HBox {
         arrowDown.setMouseTransparent(true);
 
         // the spinner buttons scale with the textfield size
-        // TODO: the following approach leads to the desired result, but it is 
         // not fully understood why and obviously it is not quite elegant
         buttonHeight = numberField.heightProperty().subtract(3).divide(2);
         // give unused space in the buttons VBox to the incrementBUtton
