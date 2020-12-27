@@ -21,7 +21,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class StartWindow extends Application {
-//TODO : I have no idea where the application constants were moved, but we should still continue to improve them to find better default values
 	static private Stage stage;
 
 	// Items to put on the screen

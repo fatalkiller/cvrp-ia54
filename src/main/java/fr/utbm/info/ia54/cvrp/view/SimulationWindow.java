@@ -36,7 +36,7 @@ public class SimulationWindow {
 	private NumBox nbEvaporationConstant;
 	private NumBox nbPheromoneInfluence;
 	private NumBox nbDistanceInfluence;
-	
+
 	private Button btnStartSimulation;
 	private Button btnUpdateSimulation;
 	private Button btnClearSimulation;
@@ -68,25 +68,25 @@ public class SimulationWindow {
 	public void startSimulation() {
 		// Lock/Unlock agent number
 		nbAgents.setDisable(!simulationStarted);
-		
+
 		// Lock/Unlock clear simulation
 		btnClearSimulation.setDisable(!simulationStarted);
 
 		// Start simulation
 		if (!simulationStarted) {
 			System.out.println("START SIMULATION");
-			
+
 			btnStartSimulation.setText("Stop simulation");
 			try {
 				// Apply simulation parameters
 				updateSimuParams();
-				
+
 				// Clear simulation first
 				clearSimulation();
-				
+
 				// Start simulation
 				SREBootstrap bootstrap = SRE.getBootstrap();
-				bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), this.type, this.map, this.isDebugMode,
+				bootstrap.startAgentWithID(MainAgent.class, UUID.randomUUID(), this.type, this.isDebugMode,
 						this.environment, this.metrics, this);
 
 				simulationStarted = true;
@@ -97,7 +97,7 @@ public class SimulationWindow {
 			// Stop simulation
 		} else {
 			System.out.println("STOP SIMULATION");
-			
+
 			btnStartSimulation.setText("Start simulation");
 
 			// Launch death agent
@@ -106,7 +106,7 @@ public class SimulationWindow {
 				SREBootstrap bootstrap = SRE.getBootstrap();
 				bootstrap.startAgent(DeathAgent.class);
 
-				simulationStarted = false;		
+				simulationStarted = false;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -232,7 +232,7 @@ public class SimulationWindow {
 				// Add control panel
 				VBox vboxControl = new VBox();
 				vboxControl.setSpacing(10);
-				
+
 				Label lbAgents = new Label("Number of CVRP agents to run simultaneously :");
 				nbAgents = new NumBox(new BigDecimal(SimuParameters.agentNumber), new BigDecimal(1));
 
@@ -249,8 +249,7 @@ public class SimulationWindow {
 						new BigDecimal(0.1));
 
 				Label lbDistInf = new Label("Distance influence (positive) :");
-				nbDistanceInfluence = new NumBox(new BigDecimal(SimuParameters.distanceInfluence),
-						new BigDecimal(0.1));
+				nbDistanceInfluence = new NumBox(new BigDecimal(SimuParameters.distanceInfluence), new BigDecimal(0.1));
 
 				btnStartSimulation = new Button("Start simulation");
 				btnStartSimulation.setOnAction(e -> startSimulation());
