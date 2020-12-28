@@ -6,12 +6,12 @@ import io.sarl.core.Initialize
 import io.sarl.core.Lifecycle
 import io.sarl.core.Logging
 import io.sarl.core.Schedules
-import java.util.List
 import fr.utbm.info.ia54.cvrp.model.Environment
 import fr.utbm.info.ia54.cvrp.model.Metrics
 import fr.utbm.info.ia54.cvrp.model.Road
 import fr.utbm.info.ia54.cvrp.view.SimulationWindow
 import fr.utbm.info.ia54.cvrp.model.SimuParameters
+import java.util.Vector
 
 // Don't write over occurrences
 // Handle synchronization issues with synchronized() when needed
@@ -76,7 +76,7 @@ agent MainAgent {
 	// Records the result of a finished agent
 	on TravelsFinished {
 		met.decreaseActiveAgents();
-		var pathTaken : List<Road> = occurrence.pathTaken;
+		var pathTaken : Vector<Road> = occurrence.pathTaken;
 		var timeTaken : Float = occurrence.timeTaken;
 		if (met.fastestTime.equals("TBD") || timeTaken < met.fastestTime.floatValue) {
 			if (isDebugMode) {
@@ -84,7 +84,6 @@ agent MainAgent {
 			}
 
 			met.fastestTime = timeTaken.toString();
-			//TODO : Make metrics.fastestPathObj an atomic
 			met.formattedFastestPath = pathTaken;
 		}
 

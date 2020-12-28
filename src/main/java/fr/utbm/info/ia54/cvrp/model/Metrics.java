@@ -2,7 +2,9 @@ package fr.utbm.info.ia54.cvrp.model;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -19,7 +21,7 @@ public class Metrics {
 	private Calendar startTime;
 	private AtomicReference<String> fastestTime;
 	private AtomicReference<String> fastestPath;
-	private List<Road> fastestPathObj; // Use this to know which path to highlight
+	private Vector<Road> fastestPathObj; // Use this to know which path to highlight
 	private Environment env; //Actually having a reference to environment might be handy
 	private AtomicInteger roundsElapsed = new AtomicInteger();
 	private AtomicInteger totalCities = new AtomicInteger();
@@ -35,7 +37,7 @@ public class Metrics {
 		startTime = Calendar.getInstance();
 		fastestPath = new AtomicReference<>("TBD");
 		fastestTime = new AtomicReference<>("TBD");
-		fastestPathObj = new ArrayList<Road>();
+		fastestPathObj = new Vector<Road>();
 		this.env = env;
 		roundsElapsed.set(0);
 		if(type.equals("TSP"))
@@ -67,8 +69,8 @@ public class Metrics {
 		this.roundsElapsed.incrementAndGet();
 	}
 
-	public void setFormattedFastestPath(List<Road> pathTaken) {
-		this.fastestPathObj = pathTaken;
+	public void setFormattedFastestPath(Vector<Road> pathTaken) {
+		this.setFastestPathObj(pathTaken);
 		String fastestPathString = "\n";
 		City currentCity = null;
 		Long capacity = new Long(0);
@@ -138,25 +140,32 @@ public class Metrics {
 			colorList.add(Color.ROYALBLUE);
 			// Hopefully enough
 
-			int i;
-			for (i = 0; i < fastestPathObj.size(); i++) {
-				Line roadLine = new Line();
-				// Assuming the depot is city 1, they should always be city1 in roads because of
-				// how roads are generated.
-				if (i > 0 && fastestPathObj.get(i).getCity1().getCapacity() > 0
-						&& fastestPathObj.get(i - 1).getCity1().getCapacity() > 0) {
-					colorIndex++;
-					if (colorIndex > colorList.size() - 1)
-						colorIndex = 0;
+			Road previousRoad = null;
+			Road currentRoad = null;
+			Iterator<Road> iterator = fastestPathObj.iterator();
+			while (iterator.hasNext()) {
+				currentRoad = iterator.next();
+				
+				if (previousRoad != null) {
+					Line roadLine = new Line();
+					// Assuming the depot is city 1, they should always be city1 in roads because of
+					// how roads are generated.
+					if (currentRoad.getCity1().getCapacity() > 0
+							&& previousRoad.getCity1().getCapacity() > 0) {
+						colorIndex++;
+						if (colorIndex > colorList.size() - 1)
+							colorIndex = 0;
+					}
+
+					roadLine.setStroke(colorList.get(colorIndex));
+					roadLine.setStartX(currentRoad.getCity1().getX());
+					roadLine.setStartY(currentRoad.getCity1().getY());
+					roadLine.setEndX(currentRoad.getCity2().getX());
+					roadLine.setEndY(currentRoad.getCity2().getY());
+
+					roadsRep.add(roadLine);
 				}
-
-				roadLine.setStroke(colorList.get(colorIndex));
-				roadLine.setStartX(fastestPathObj.get(i).getCity1().getX());
-				roadLine.setStartY(fastestPathObj.get(i).getCity1().getY());
-				roadLine.setEndX(fastestPathObj.get(i).getCity2().getX());
-				roadLine.setEndY(fastestPathObj.get(i).getCity2().getY());
-
-				roadsRep.add(roadLine);
+				previousRoad = currentRoad;	
 			}
 		}
 		return roadsRep;
@@ -166,24 +175,31 @@ public class Metrics {
 	public List<List<Road>> getFastestRoads() {
 		List<List<Road>> listRoutes = new ArrayList<List<Road>>();
 		// Not implemented for simple TSP
-		if (type.equals("CVRP")) {
-			int i;
-			
+		if (type.equals("CVRP")) {		
 			// Initialize first route
 			int routeIndex = 0;
 			listRoutes.add(new ArrayList<Road>());
 			
-			for (i = 0; i < fastestPathObj.size(); i++) {
-				// Assuming the depot is city 1, they should always be city1 in roads because of
-				// how roads are generated.
-				if (i > 0 && fastestPathObj.get(i).getCity1().getCapacity() > 0
-						&& fastestPathObj.get(i - 1).getCity1().getCapacity() > 0) {
-					routeIndex++;
-					listRoutes.add(new ArrayList<Road>());
-				}
+			
+			Road previousRoad = null;
+			Road currentRoad = null;
+			Iterator<Road> iterator = fastestPathObj.iterator();
+			while (iterator.hasNext()) {
+				currentRoad = iterator.next();
+				
+				if (previousRoad != null) {
+					// Assuming the depot is city 1, they should always be city1 in roads because of
+					// how roads are generated.
+					if (currentRoad.getCity1().getCapacity() > 0
+							&& previousRoad.getCity1().getCapacity() > 0) {
+						routeIndex++;
+						listRoutes.add(new ArrayList<Road>());
+					}
 
-				// Add current road to corresponding route
-				listRoutes.get(routeIndex).add(fastestPathObj.get(i));
+					// Add current road to corresponding route
+					listRoutes.get(routeIndex).add(currentRoad);
+				}
+				previousRoad = currentRoad;	
 			}
 		}
 		return listRoutes;
@@ -229,11 +245,11 @@ public class Metrics {
 		this.fastestPath.set(fastestPath);
 	}
 
-	public List<Road> getFastestPathObj() {
+	public Vector<Road> getFastestPathObj() {
 		return fastestPathObj;
 	}
 
-	public void setFastestPathObj(List<Road> fastestPathObj) {
+	public void setFastestPathObj(Vector<Road> fastestPathObj) {
 		this.fastestPathObj = fastestPathObj;
 	}
 

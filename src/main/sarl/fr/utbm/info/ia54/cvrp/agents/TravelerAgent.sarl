@@ -15,6 +15,7 @@ import fr.utbm.info.ia54.cvrp.model.Metrics
 import fr.utbm.info.ia54.cvrp.model.City
 import fr.utbm.info.ia54.cvrp.model.Road
 import fr.utbm.info.ia54.cvrp.model.SimuParameters
+import java.util.Vector
 
 /** 
  * @author ma-pe
@@ -28,7 +29,7 @@ agent TravelerAgent {
 	var startingCity : City;
 	var currentCity : City;
 	var visitedCities : Set<City>;
-	var travelledRoads : List<Road>;
+	var travelledRoads : Vector<Road>;
 	var travelTime : Float;
 	var isDebugMode : Boolean;
 	var type : String;
@@ -50,7 +51,7 @@ agent TravelerAgent {
 		maxCharge = currentCity.getCapacity();
 		visitedCities = new HashSet<City>();
 		visitedCities.add(startingCity);
-		travelledRoads = new ArrayList<Road>();
+		travelledRoads = new Vector<Road>();
 		travelTime = new Float(0);
 
 		loggingName = "Traveler Agent - Round " + met.roundsElapsed + " - Starting city " + startingCity.name;
