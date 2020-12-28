@@ -18,7 +18,8 @@ public class Environment {
 	public List<City> cities;
 	public List<Road> roads;
 	
-	//TODO : this belongs in metrics and not in environment since its essentially just information and not physical objects
+	//this belongs in metrics and not in environment since its essentially just information and not physical objects
+	//However we're already scanning the bench data here so I guess we're storing this here
 	private String benchType;
 	private String benchName;
 	private String benchBestCost;

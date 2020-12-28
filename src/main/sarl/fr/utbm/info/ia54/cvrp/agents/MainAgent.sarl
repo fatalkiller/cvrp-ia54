@@ -72,6 +72,16 @@ agent MainAgent {
 			}
 		}
 	}
+	
+	def startOptimizationAgent() : void 
+	{
+		//The local optimizations rely on the cvrp branches so lets only optimize it
+		if(type.equals("CVRP"))
+		{
+			met.increaseActiveAgents();
+			spawn(LocalOptimizationAgent, env, met, type, isDebugMode);
+		}
+	}
 
 	// Records the result of a finished agent
 	on TravelsFinished {
@@ -96,7 +106,14 @@ agent MainAgent {
 		if (met.activeAgents == 0) {
 			met.increaseElapsedRounds();
 			env.updateWeights();
-			if (isDebugMode) {
+			
+			if(met.roundsElapsed.get()%50==0)
+			{
+				startOptimizationAgent();
+			}
+			
+			if (isDebugMode) 
+			{
 				info("New round")
 			}
 			startAgents();

@@ -1,0 +1,133 @@
+package fr.utbm.info.ia54.cvrp.agents
+
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Destroy
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+import io.sarl.core.Logging
+import java.util.ArrayList
+import java.util.HashSet
+import java.util.List
+import java.util.Random
+import java.util.Set
+import fr.utbm.info.ia54.cvrp.model.Environment
+import fr.utbm.info.ia54.cvrp.model.Metrics
+import fr.utbm.info.ia54.cvrp.model.City
+import fr.utbm.info.ia54.cvrp.model.Road
+import fr.utbm.info.ia54.cvrp.model.SimuParameters
+import java.util.Vector
+
+/** 
+ * @author ma-pe
+ * 
+ */
+// See main
+@SuppressWarnings("potential_inefficient_value_conversion", "potential_field_synchronization_problem")
+agent LocalOptimizationAgent {
+	var env : Environment;
+	var met : Metrics;
+	var startingCity : City;
+	var currentCity : City;
+	var visitedCities : Set<City>;
+	var travelledRoads : Vector<Road>;
+	var travelTime : Float;
+	var isDebugMode : Boolean;
+	var type : String;
+	var charge : Long;
+	var maxCharge : Long;
+	
+	//We want to optimize all of these branches individually
+	var branches : Set<Set<City>>;
+
+	uses Logging, Lifecycle, DefaultContextInteractions
+
+	on Initialize {
+		env = occurrence.parameters.get(0) as Environment;
+		met = occurrence.parameters.get(1) as Metrics;
+
+		type = occurrence.parameters.get(2) as String
+		isDebugMode = occurrence.parameters.get(3) as Boolean;
+
+		startingCity = env.getCityByName("City 1");
+		currentCity = startingCity;
+		charge = new Long(0);
+		maxCharge = currentCity.getCapacity();
+		visitedCities = new HashSet<City>();
+		visitedCities.add(startingCity);
+		travelledRoads = new Vector<Road>();
+		travelTime = new Float(0);
+		
+		doBranches();
+
+		loggingName = "Opimization Agent - Round " + met.roundsElapsed + " - Starting city " + startingCity.name;
+
+		if (isDebugMode) {
+			info("Opimization agent spawned !");
+		}
+
+		travel();
+	}
+	
+	def doBranches() : void 
+	{
+		branches = new HashSet<Set<City>>();
+		var branch : HashSet<City> = new HashSet<City>();
+		branches.add(branch);
+		var fastestPath : Vector<Road> = met.getFastestPathObj();
+		var i : int = 0;
+		var visitingCity : City = env.getCityByName("City 1");
+		
+		while (fastestPath.get(i) !== null)
+		{
+			branch.add(visitingCity)
+			visitingCity = fastestPath.get(i).travel(visitingCity)
+			i++
+			if(visitingCity===startingCity)
+			{
+				branch = new HashSet<City>();
+				branches.add(branch);
+			}
+		}
+	}
+
+	def travel() : void {
+		
+		//We shouldnt need to worry about charge since we know the branch is valid and changig the visiting order shouldnt change that
+		var road : Road = null;
+		var paths : Set<Vector<Road>> = new HashSet<Vector<Road>>();
+		var path : Vector<Road>;
+		
+		//TODO
+		//For each branch, find an ideal path linking all cities 
+		//Dont forget to add a path from last city to start city
+		for(branch : branches)
+		{
+			path = new Vector<Road>();
+		}
+		
+		//Create the path to send back to mainAgent
+		for(p : paths)
+		{
+			travelledRoads.addAll(p);
+		}
+		
+		//Calculate travel time
+		for(r : travelledRoads)
+		{
+			travelTime= travelTime + r.timeTaken;
+		}
+		
+		emit(new TravelsFinished(travelledRoads, travelTime))
+		killMe;
+	}
+
+	on ExitApplicationEvent {
+		killMe;
+	}
+
+	on Destroy {
+		if (isDebugMode) {
+			info("The traveler agent was stopped.")
+		}
+	}
+}
