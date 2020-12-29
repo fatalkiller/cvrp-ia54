@@ -78,6 +78,9 @@ agent MainAgent {
 		//The local optimizations rely on the cvrp branches so lets only optimize it
 		if(type.equals("CVRP"))
 		{
+			//We shouldnt want to increaseActiveAgents as itd slow down everything else
+			//We want opimization parallele to the regular ACO
+			//Altho for some reason the rounds stops regarless even if I dont increase ; Investigate later
 			met.increaseActiveAgents();
 			spawn(LocalOptimizationAgent, env, met, type, isDebugMode);
 		}
@@ -107,7 +110,7 @@ agent MainAgent {
 			met.increaseElapsedRounds();
 			env.updateWeights();
 			
-			if(met.roundsElapsed.get()%50==0)
+			if(met.roundsElapsed.get() != 0 && met.roundsElapsed.get()%100==0)
 			{
 				startOptimizationAgent();
 			}

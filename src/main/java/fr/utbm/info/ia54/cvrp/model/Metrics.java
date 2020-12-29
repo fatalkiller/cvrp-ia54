@@ -117,6 +117,8 @@ public class Metrics {
 		this.fastestPath.set(fastestPathString);
 	}
 
+	//TODO : For some reason the RED (first) path only ever seem to have one connection to the start
+	// Im almost certain the first road isnt being displayed
 	public List<Line> getFastestRoadsRepresentation() {
 		List<Line> roadsRep = new ArrayList<Line>();
 		if (type.equals("TSP")) {

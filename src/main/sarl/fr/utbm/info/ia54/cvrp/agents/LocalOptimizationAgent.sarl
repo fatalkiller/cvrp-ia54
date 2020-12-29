@@ -1,20 +1,18 @@
 package fr.utbm.info.ia54.cvrp.agents
 
+import fr.utbm.info.ia54.cvrp.model.City
+import fr.utbm.info.ia54.cvrp.model.Environment
+import fr.utbm.info.ia54.cvrp.model.Metrics
+import fr.utbm.info.ia54.cvrp.model.Road
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Destroy
 import io.sarl.core.Initialize
 import io.sarl.core.Lifecycle
 import io.sarl.core.Logging
 import java.util.ArrayList
+import java.util.Collections
 import java.util.HashSet
-import java.util.List
-import java.util.Random
 import java.util.Set
-import fr.utbm.info.ia54.cvrp.model.Environment
-import fr.utbm.info.ia54.cvrp.model.Metrics
-import fr.utbm.info.ia54.cvrp.model.City
-import fr.utbm.info.ia54.cvrp.model.Road
-import fr.utbm.info.ia54.cvrp.model.SimuParameters
 import java.util.Vector
 
 /** 
@@ -27,17 +25,10 @@ agent LocalOptimizationAgent {
 	var env : Environment;
 	var met : Metrics;
 	var startingCity : City;
-	var currentCity : City;
 	var visitedCities : Set<City>;
 	var travelledRoads : Vector<Road>;
 	var travelTime : Float;
 	var isDebugMode : Boolean;
-	var type : String;
-	var charge : Long;
-	var maxCharge : Long;
-	
-	//We want to optimize all of these branches individually
-	var branches : Set<Set<City>>;
 
 	uses Logging, Lifecycle, DefaultContextInteractions
 
@@ -45,19 +36,13 @@ agent LocalOptimizationAgent {
 		env = occurrence.parameters.get(0) as Environment;
 		met = occurrence.parameters.get(1) as Metrics;
 
-		type = occurrence.parameters.get(2) as String
 		isDebugMode = occurrence.parameters.get(3) as Boolean;
 
 		startingCity = env.getCityByName("City 1");
-		currentCity = startingCity;
-		charge = new Long(0);
-		maxCharge = currentCity.getCapacity();
 		visitedCities = new HashSet<City>();
 		visitedCities.add(startingCity);
 		travelledRoads = new Vector<Road>();
 		travelTime = new Float(0);
-		
-		doBranches();
 
 		loggingName = "Opimization Agent - Round " + met.roundsElapsed + " - Starting city " + startingCity.name;
 
@@ -65,44 +50,170 @@ agent LocalOptimizationAgent {
 			info("Opimization agent spawned !");
 		}
 
-		travel();
+		threeByThreeOptimizations();
+		//TODO : add more optimizations if you have any genius ideas
+		emit(new TravelsFinished(travelledRoads, travelTime))
 	}
-	
+
+	//ok even with branches of size like, 8, this takes way too long (factorial time lmao)
+	// Instead lets look for smaller optimizations, like taking apart roads 3 by 3
+	// And checking if changing the city order from ABCD to ACBD works better
+	// Just make sure B or C arent startingCity
+	def threeByThreeOptimizations() : void
+	{
+		//List of cities visited in order
+		var takenPath : ArrayList<City> = new ArrayList<City>();
+		var fastestPath : Vector<Road> = met.getFastestPathObj();
+		var visitingCity : City = env.getCityByName("City 1");
+		var i : int
+		var baseTime : Float
+		var optiTime : Float
+		var improvement : boolean
+
+		takenPath.add(visitingCity)
+		for (road : fastestPath) 
+		{
+			visitingCity = road.travel(visitingCity)
+			takenPath.add(visitingCity)
+		}
+		
+		improvement = true
+		while(improvement==true)
+		{
+			improvement = false
+			for (i = 0; i < takenPath.size() - 3; i++) 
+			{
+				if (takenPath.get(i + 1) !== startingCity && takenPath.get(i + 2) !== startingCity) 
+				{
+					baseTime = env.getRoadBetweenTwoCities(takenPath.get(i), takenPath.get(i + 1)).timeTaken +
+						env.getRoadBetweenTwoCities(takenPath.get(i + 1), takenPath.get(i + 2)).timeTaken +
+						env.getRoadBetweenTwoCities(takenPath.get(i + 2), takenPath.get(i + 3)).timeTaken;
+
+					optiTime = env.getRoadBetweenTwoCities(takenPath.get(i), takenPath.get(i + 2)).timeTaken +
+						env.getRoadBetweenTwoCities(takenPath.get(i + 2), takenPath.get(i + 1)).timeTaken +
+						env.getRoadBetweenTwoCities(takenPath.get(i + 1), takenPath.get(i + 3)).timeTaken;
+					if (optiTime < baseTime) 
+					{
+						Collections.swap(takenPath, i + 1, i + 2)
+						improvement = true
+						if(isDebugMode)
+							info("Improvement found!")
+					}
+				}
+			}
+		}
+		
+		//Now takenPath is a list of city in a more optimized order
+		//Convert it into a Vector of roads, calculate the time and send back to main
+		for(i=0;i<takenPath.size()-1;i++)
+		{
+			travelledRoads.add(env.getRoadBetweenTwoCities(takenPath.get(i), takenPath.get(i+1)))
+		}
+		for(road : travelledRoads)
+		{
+			travelTime = travelTime + road.timeTaken;
+		}
+		if (isDebugMode)
+			info("sending improvements back to main")
+	}
+
+	/*
 	def doBranches() : void 
 	{
 		branches = new HashSet<Set<City>>();
 		var branch : HashSet<City> = new HashSet<City>();
 		branches.add(branch);
 		var fastestPath : Vector<Road> = met.getFastestPathObj();
-		var i : int = 0;
 		var visitingCity : City = env.getCityByName("City 1");
 		
-		while (fastestPath.get(i) !== null)
+		for(road : fastestPath)
 		{
 			branch.add(visitingCity)
-			visitingCity = fastestPath.get(i).travel(visitingCity)
-			i++
-			if(visitingCity===startingCity)
+			visitingCity = road.travel(visitingCity)
+			if (visitingCity === startingCity)
 			{
 				branch = new HashSet<City>();
 				branches.add(branch);
 			}
+			
 		}
 	}
 
-	def travel() : void {
+	def branchesTravel() : void {
 		
-		//We shouldnt need to worry about charge since we know the branch is valid and changig the visiting order shouldnt change that
-		var road : Road = null;
+		//We shouldnt need to worry about charge since we know the branch is valid and changig the visiting order shouldnt change that.
+		
+		//The optimized paths
 		var paths : Set<Vector<Road>> = new HashSet<Vector<Road>>();
+		//The list of possible paths for a branch
+		var branchPaths : List<Vector<Road>>;
 		var path : Vector<Road>;
+		var permutations : Set<List<City>>;
+		var bestPath : Vector<Road>;
+		var bestTime : Float;
+		var time : Float;
+		var i : int;
+		var j : int;
 		
-		//TODO
-		//For each branch, find an ideal path linking all cities 
-		//Dont forget to add a path from last city to start city
+		//For each branch, find all possible permutations of cities somehow.
+		// There probably code to get all permutations of an array somewhere
+		// Maybe remove starting city from each branch and then add it back since we want the permutations to always start with it
+		//Then for each permutation find the list of roads connecting them in that order, only keep the best list. 
+		//Add a road back to the start. Add the result to paths.
 		for(branch : branches)
 		{
-			path = new Vector<Road>();
+			info("Making the perms, size "+(branch.size()-1) )
+			branch.remove(startingCity);
+			//making the permutations
+			permutations =	new HashSet<List<City>>()
+			permCities(permutations, new ArrayList<City>(branch), branch.size());
+
+			info("Making the roads")
+			//making the roads
+			branchPaths = new ArrayList<Vector<Road>>()
+			j=0
+			for(permutation : permutations)
+			{
+				permutation.add(0, startingCity)
+				path = new Vector<Road>();
+				for(i=0;i<permutation.size()-1;i++)
+				{
+					path.add(env.getRoadBetweenTwoCities(permutation.get(i), permutation.get(i+1)))
+				}
+				path.add(env.getRoadBetweenTwoCities(permutation.get(permutation.size() - 1), permutation.get(0)))
+				branchPaths.add(path);
+				j++
+				info(j+"/"+permutations.size())
+			}
+
+			info("Picking best path")
+			// Picking the best branchPaths of them all
+			for(i=0;i<branchPaths.size();i++)
+			{
+				if(i==0)
+				{
+					bestPath = branchPaths.get(0);
+					bestTime = new Float(0);
+					for(road : bestPath)
+					{
+						bestTime=bestTime+road.timeTaken;
+					}
+				}
+				else
+				{
+					time = new Float(0);
+					for(road : branchPaths.get(i))
+					{
+						time = time + road.timeTaken;
+					}
+					if(time<bestTime)
+					{
+						bestPath = branchPaths.get(i);
+						bestTime = time;
+					}
+				}
+			}
+			paths.add(bestPath);
 		}
 		
 		//Create the path to send back to mainAgent
@@ -121,6 +232,29 @@ agent LocalOptimizationAgent {
 		killMe;
 	}
 
+	//Heap's algo
+	def permCities(perm : Set<List<City>>, cities : List<City>, citiesSize : int) : void
+	{
+		
+	    if (citiesSize == 1)
+	    {
+	        perm.add(cities)
+		} 
+	    else 
+	    {
+	        for(var i: int=0; i<citiesSize; i++)
+	        {
+	            permCities(perm, cities, citiesSize - 1)
+	
+	            var j : int = ( citiesSize % 2 == 0 ) ? i : 0
+	
+	            Collections.swap(cities, citiesSize-1, j)
+        	}
+	    }
+	}
+	
+	*/
+	
 	on ExitApplicationEvent {
 		killMe;
 	}

@@ -108,6 +108,12 @@ agent TravelerAgent {
 		//TODO : similarly to how we made it more likely to go back to base at low capacity, 
 		//we should make it more likely to explore at high capacity to prevent backs and forth close to the start ?
 		
+		//This is really basic but this should be better than nothing
+		if(charge>maxCharge/2)
+		{
+			availableRoads.remove(startingCity)
+		}
+		
 		for (road : availableRoads) {
 			totalWeights +=
 				new Float(Math.pow(road.weight, SimuParameters.pheromoneInfluence) *

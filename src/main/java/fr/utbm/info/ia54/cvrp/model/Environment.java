@@ -284,6 +284,25 @@ public class Environment {
 
 		return roads;
 	}
+	
+	public Road getRoadBetweenTwoCities(City city1, City city2)
+	{
+		Road resRoad=null;
+		
+		for (Road road : this.roads) 
+		{
+			if (road.getCity1() == city1 && road.getCity2() == city2) 
+			{
+				resRoad=road;
+			}
+			else if(road.getCity1() == city2 && road.getCity2() == city1) 
+			{
+				resRoad=road;
+			}
+		}
+		
+		return resRoad;
+	}
 
 	public void updateWeights() {
 		for (Road road : roads) {
