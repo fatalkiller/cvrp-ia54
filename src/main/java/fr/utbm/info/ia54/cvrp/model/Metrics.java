@@ -143,13 +143,11 @@ public class Metrics {
 			// Hopefully enough
 
 			Road previousRoad = null;
-			Road currentRoad = null;
-			Iterator<Road> iterator = fastestPathObj.iterator();
-			while (iterator.hasNext()) {
-				currentRoad = iterator.next();
-				
-				if (previousRoad != null) {
-					Line roadLine = new Line();
+			Line roadLine = new Line();
+			for(Road currentRoad : fastestPathObj)
+			{
+				if (previousRoad != null) 
+				{
 					// Assuming the depot is city 1, they should always be city1 in roads because of
 					// how roads are generated.
 					if (currentRoad.getCity1().getCapacity() > 0
@@ -158,7 +156,9 @@ public class Metrics {
 						if (colorIndex > colorList.size() - 1)
 							colorIndex = 0;
 					}
+				}
 
+					roadLine = new Line();
 					roadLine.setStroke(colorList.get(colorIndex));
 					roadLine.setStartX(currentRoad.getCity1().getX());
 					roadLine.setStartY(currentRoad.getCity1().getY());
@@ -166,7 +166,6 @@ public class Metrics {
 					roadLine.setEndY(currentRoad.getCity2().getY());
 
 					roadsRep.add(roadLine);
-				}
 				previousRoad = currentRoad;	
 			}
 		}
