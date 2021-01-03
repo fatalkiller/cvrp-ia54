@@ -2,6 +2,8 @@ package fr.utbm.info.ia54.cvrp.model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -17,9 +19,11 @@ public class Environment {
 
 	public List<City> cities;
 	public List<Road> roads;
-	
-	//this belongs in metrics and not in environment since its essentially just information and not physical objects
-	//However we're already scanning the bench data here so I guess we're storing this here
+
+	// this belongs in metrics and not in environment since its essentially just
+	// information and not physical objects
+	// However we're already scanning the bench data here so I guess we're storing
+	// this here
 	private String benchType;
 	private String benchName;
 	private String benchBestCost;
@@ -34,17 +38,22 @@ public class Environment {
 			makeDefaultMap();
 		} else {
 			loadBenchmarkFile();
-			
+
 			if (this.benchType.equals("CVRP")) {
 				loadBenchmarkSolBestCost();
 			}
 		}
 	}
-	
+
 	private void loadBenchmarkFile() {
 		final boolean isCVRP = this.benchType.equals("CVRP");
-		File mapFile = new File(
-				"src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/" + benchName + (isCVRP ? ".vrp" : ".tsp"));
+
+		Path filePath = Paths.get("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/", "benchmark", benchName + (isCVRP ? ".vrp" : ".tsp"));
+		// FOR JAR FILE COMPILED
+//		Path filePath = Paths.get(System.getProperty("user.dir"), "benchmark", benchName + (isCVRP ? ".vrp" : ".tsp"));
+
+		File mapFile = new File(filePath.toString());
+
 		Scanner scanner = null;
 		String line = null;
 		String data[] = null;
@@ -100,10 +109,14 @@ public class Environment {
 		autoGenerateRoads();
 		resizeMap(maxX, maxY);
 	}
-	
+
 	private void loadBenchmarkSolBestCost() {
-		File mapSolFile = new File(
-				"src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/" + benchName + ".sol");
+		Path filePath = Paths.get("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/", "benchmark", benchName + ".sol");
+		// FOR JAR FILE COMPILED
+//		Path filePath = Paths.get(System.getProperty("user.dir"), "benchmark", benchName + ".sol");
+
+		File mapSolFile = new File(filePath.toString());
+
 		Scanner scanner = null;
 		String line = null;
 		String data[] = null;
@@ -112,7 +125,7 @@ public class Environment {
 		} catch (FileNotFoundException e) {
 			System.out.println("Error reading map file.");
 		}
-		
+
 		while (scanner.hasNextLine()) {
 			line = scanner.nextLine();
 			if (line != null && !line.isEmpty()) {
@@ -284,43 +297,38 @@ public class Environment {
 
 		return roads;
 	}
-	
-	public Road getRoadBetweenTwoCities(City city1, City city2)
-	{
-		Road resRoad=null;
-		
-		for (Road road : this.roads) 
-		{
-			if (road.getCity1() == city1 && road.getCity2() == city2) 
-			{
-				resRoad=road;
-			}
-			else if(road.getCity1() == city2 && road.getCity2() == city1) 
-			{
-				resRoad=road;
+
+	public Road getRoadBetweenTwoCities(City city1, City city2) {
+		Road resRoad = null;
+
+		for (Road road : this.roads) {
+			if (road.getCity1() == city1 && road.getCity2() == city2) {
+				resRoad = road;
+			} else if (road.getCity1() == city2 && road.getCity2() == city1) {
+				resRoad = road;
 			}
 		}
-		
+
 		return resRoad;
 	}
 
 	public void updateWeights() {
 		for (Road road : roads) {
 
-			//Only include the future weight if this road was actually visited.
-			//This prevents the division by 0 into infinity issue
-			//According to the wiki we should still evaporate, though
-			//This is a huge improvement as not having to set futureweight to 1 allows for proportional control of the weights
-			//I think having regular weights set to 1 should still be fine as its only a starting variable and doesnt recur
-			if(road.getFutureWeight()!=0)
-			{
-				road.setWeight(((1 - SimuParameters.evaporationProportion) * road.getWeight()) + (SimuParameters.evaporationConstant / road.getFutureWeight()));
-			}
-			else
-			{
+			// Only include the future weight if this road was actually visited.
+			// This prevents the division by 0 into infinity issue
+			// According to the wiki we should still evaporate, though
+			// This is a huge improvement as not having to set futureweight to 1 allows for
+			// proportional control of the weights
+			// I think having regular weights set to 1 should still be fine as its only a
+			// starting variable and doesnt recur
+			if (road.getFutureWeight() != 0) {
+				road.setWeight(((1 - SimuParameters.evaporationProportion) * road.getWeight())
+						+ (SimuParameters.evaporationConstant / road.getFutureWeight()));
+			} else {
 				road.setWeight((1 - SimuParameters.evaporationProportion) * road.getWeight());
 			}
-			
+
 			road.setFutureWeight(new Float(0));
 		}
 	}
