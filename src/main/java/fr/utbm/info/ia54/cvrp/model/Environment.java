@@ -48,7 +48,7 @@ public class Environment {
 	private void loadBenchmarkFile() {
 		final boolean isCVRP = this.benchType.equals("CVRP");
 
-		Path filePath = Paths.get("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/", "benchmark", benchName + (isCVRP ? ".vrp" : ".tsp"));
+		Path filePath = Paths.get("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark", benchName + (isCVRP ? ".vrp" : ".tsp"));
 		// FOR JAR FILE COMPILED
 //		Path filePath = Paths.get(System.getProperty("user.dir"), "benchmark", benchName + (isCVRP ? ".vrp" : ".tsp"));
 
@@ -111,7 +111,7 @@ public class Environment {
 	}
 
 	private void loadBenchmarkSolBestCost() {
-		Path filePath = Paths.get("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark/", "benchmark", benchName + ".sol");
+		Path filePath = Paths.get("src/main/resources/fr/utbm/info/ia54/cvrp/benchmark", benchName + ".sol");
 		// FOR JAR FILE COMPILED
 //		Path filePath = Paths.get(System.getProperty("user.dir"), "benchmark", benchName + ".sol");
 
